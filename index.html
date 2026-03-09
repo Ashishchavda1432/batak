@@ -1,163 +1,284 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Egg Master – Gujarat's Best Egg Dishes</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,900;1,700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet" />
-  <style>
-    :root {
-      --yolk: #F5A623;
-      --yolk-dark: #D4821A;
-      --brown: #3B2009;
-      --shell: #FFF8ED;
-      --white: #ffffff;
-      --radius: 16px;
-      --shadow: 0 8px 30px rgba(59,32,9,0.10);
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'DM Sans', sans-serif; background: var(--shell); color: var(--brown); padding-top: 78px; }
 
-    nav {
-      position: fixed; top: 0; width: 100%; height: 70px;
-      background: var(--white);
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 0 24px;
-      box-shadow: 0 2px 14px rgba(0,0,0,0.08);
-      z-index: 1000;
-    }
+<meta charset="UTF-8">
+<title>Egg Master Restaurant</title>
 
-    .logo { font-family: 'Playfair Display', serif; font-weight: 900; font-size: 1.4rem; color: var(--brown); text-decoration: none; }
-    .logo span { color: var(--yolk); }
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
-    .cart-btn {
-      position: relative; background: var(--shell);
-      border: none; width: 44px; height: 44px;
-      border-radius: 50%; cursor: pointer; font-size: 1.2rem;
-    }
+<style>
 
-    .cart-count {
-      position: absolute; top: -5px; right: -5px;
-      background: var(--yolk); color: var(--brown);
-      font-weight: 700; font-size: 0.75rem;
-      width: 20px; height: 20px;
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-    }
-
-    .hero {
-      padding: 38px 20px 24px;
-      text-align: center;
-    }
-
-    .hero h1 {
-      font-family: 'Playfair Display', serif;
-      font-size: 2rem;
-      margin-bottom: 6px;
-    }
-
-    .hero em { color: var(--yolk); font-style: normal; }
-
-    .hero p { font-size: 0.9rem; opacity: 0.8; }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 18px;
-      padding: 18px;
-      max-width: 1100px;
-      margin: auto;
-    }
-
-    .card {
-      background: var(--white);
-      border-radius: var(--radius);
-      overflow: hidden;
-      box-shadow: var(--shadow);
-      transition: transform 0.28s, box-shadow 0.28s;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .card:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 18px 40px rgba(59,32,9,0.14);
-    }
-
-    .card img {
-      width: 100%;
-      height: 195px;
-      object-fit: cover;
-    }
-
-    .card-info {
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .price {
-      font-weight: 800;
-      color: var(--yolk-dark);
-      font-size: 1.2rem;
-      margin-bottom: 10px;
-    }
-
-    .add-btn {
-      background: var(--yolk);
-      border: none;
-      padding: 10px;
-      border-radius: 30px;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-  </style>
-</head>
-<body>
-
-<nav>
-  <a href="#" class="logo">🍳 Egg <span>Master</span></a>
-  <button class="cart-btn">🛒 <span class="cart-count">0</span></button>
-</nav>
-
-<div class="hero">
-  <h1>Gujarat's Finest <em>Egg Dishes</em></h1>
-  <p>Fresh eggs, bold spices, straight to your doorstep 🌶️</p>
-</div>
-
-<div class="grid" id="menu-grid"></div>
-
-<script>
-const menu = [
-  {name:"Surti Egg Gotalo",price:70,img:"https://images.unsplash.com/photo-1632778149955-e80f8ceca2e8?w=600&q=80"},
-  {name:"Egg Tikka Masala",price:60,img:"https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=600&q=80"},
-  {name:"Cheese Egg Bhurji",price:80,img:"https://images.unsplash.com/photo-1510693206972-df098062cb71?w=600&q=80"},
-  {name:"Egg Kheema",price:60,img:"https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=600&q=80"},
-
-  {name:"Butter Egg Masala",price:70,img:"https://images.unsplash.com/photo-1604908176997-4319c9b1e4b3?w=600&q=80"},
-  {name:"Half Fry Egg",price:60,img:"https://images.unsplash.com/photo-1582169505937-b9992bd01ed9?w=600&q=80"},
-  {name:"Double Omelette",price:70,img:"https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=600&q=80"},
-  {name:"Masala Omelette",price:50,img:"https://images.unsplash.com/photo-1510693206972-df098062cb71?w=600&q=80"},
-  {name:"Egg Curry",price:60,img:"https://images.unsplash.com/photo-1604908177522-432a3d1b1e34?w=600&q=80"},
-  {name:"Egg Fried Rice",price:80,img:"https://images.unsplash.com/photo-1604908554261-0c6b3d8c8e5d?w=600&q=80"},
-  {name:"Anda Pav",price:60,img:"https://images.unsplash.com/photo-1601050690597-df0568f70950?w=600&q=80"},
-  {name:"Egg Cheese Roll",price:110,img:"https://images.unsplash.com/photo-1604908176949-b16b8a5c4f3b?w=600&q=80"},
-  {name:"Egg Bhurji Pav",price:70,img:"https://images.unsplash.com/photo-1604908176812-52c16e491061?w=600&q=80"}
-];
-
-function buildMenu(){
-  const grid=document.getElementById("menu-grid");
-  grid.innerHTML=menu.map(m=>`
-  <div class="card">
-    <img src="${m.img}">
-    <div class="card-info">
-      <h3>${m.name}</h3>
-      <span class="price">₹${m.price}</span>
-      <button class="add-btn">Add to Cart</button>
-    </div>
-  </div>`).join("");
+body{
+font-family:Arial;
+margin:0;
+background:#f4f4f4;
 }
 
-buildMenu();
+header{
+background:#ff5722;
+color:white;
+padding:15px;
+text-align:center;
+font-size:25px;
+}
+
+.container{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:20px;
+padding:20px;
+}
+
+.card{
+background:white;
+border-radius:10px;
+box-shadow:0 3px 8px rgba(0,0,0,0.2);
+padding:10px;
+text-align:center;
+}
+
+.card img{
+width:100%;
+height:160px;
+object-fit:cover;
+border-radius:8px;
+}
+
+.price{
+color:#ff5722;
+font-weight:bold;
+}
+
+button{
+background:#ff5722;
+color:white;
+border:none;
+padding:10px;
+margin-top:5px;
+border-radius:5px;
+cursor:pointer;
+}
+
+.cart{
+position:fixed;
+bottom:0;
+width:100%;
+background:white;
+padding:15px;
+box-shadow:0 -3px 10px rgba(0,0,0,0.3);
+}
+
+input,textarea{
+width:100%;
+padding:8px;
+margin-top:5px;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+🍳 Egg Master Online Order
+</header>
+
+<div class="container" id="menu"></div>
+
+<div class="cart">
+
+<h3>Customer Details</h3>
+
+<input id="name" placeholder="Name">
+<input id="phone" placeholder="Phone">
+<textarea id="address" placeholder="Address"></textarea>
+
+<label>Delivery Distance (KM)</label>
+<input id="distance" type="number" value="1">
+
+<br><br>
+
+<button onclick="generateBill()">Generate Bill</button>
+<button onclick="sendWhatsApp()">WhatsApp Order</button>
+<button onclick="downloadPDF()">Download PDF Bill</button>
+
+<h3 id="total"></h3>
+
+</div>
+
+<script>
+
+const PHONE="+919586096174"
+
+const menu=[
+
+const menu=[
+
+{
+name:"Egg Bhurji",
+price:60,
+img:"https://source.unsplash.com/400x300/?egg-bhurji,indian"
+},
+
+{
+name:"Egg Curry",
+price:60,
+img:"https://source.unsplash.com/400x300/?egg-curry,indian"
+},
+
+{
+name:"Egg Masala",
+price:40,
+img:"https://source.unsplash.com/400x300/?egg-masala"
+},
+
+{
+name:"Masala Omelette",
+price:40,
+img:"https://source.unsplash.com/400x300/?masala-omelette"
+},
+
+{
+name:"Egg Fried Rice",
+price:70,
+img:"https://source.unsplash.com/400x300/?egg-fried-rice"
+},
+
+{
+name:"Egg Biryani",
+price:80,
+img:"https://source.unsplash.com/400x300/?egg-biryani"
+},
+
+{
+name:"Egg Kheema",
+price:50,
+img:"https://source.unsplash.com/400x300/?egg-keema"
+},
+
+{
+name:"Surti Gotalo",
+price:60,
+img:"https://source.unsplash.com/400x300/?surti-gotalo"
+},
+
+{
+name:"Boiled Omelette",
+price:40,
+img:"https://source.unsplash.com/400x300/?boiled-omelette"
+},
+
+{
+name:"Bread Omelette",
+price:60,
+img:"https://source.unsplash.com/400x300/?bread-omelette"
+}
+
+]
+]
+
+let cart=[]
+
+const menuDiv=document.getElementById("menu")
+
+menu.forEach((item,i)=>{
+
+menuDiv.innerHTML+=`
+
+<div class="card">
+
+<img src="${item.img}">
+
+<h3>${item.name}</h3>
+
+<div class="price">₹${item.price}</div>
+
+<button onclick="addItem(${i})">Add</button>
+
+</div>
+
+`
+
+})
+
+function addItem(i){
+
+cart.push(menu[i])
+alert(menu[i].name+" added")
+
+}
+
+let billText=""
+
+function generateBill(){
+
+let total=0
+let items=""
+
+cart.forEach(i=>{
+
+total+=i.price
+items+=i.name+" ₹"+i.price+"\n"
+
+})
+
+let km=document.getElementById("distance").value
+
+let delivery=km*10
+
+let grand=total+delivery
+
+document.getElementById("total").innerText="Total ₹"+grand
+
+billText=
+
+`Egg Master Order
+
+Items
+${items}
+
+Delivery ₹${delivery}
+
+Total ₹${grand}`
+
+}
+
+function sendWhatsApp(){
+
+let name=document.getElementById("name").value
+let phone=document.getElementById("phone").value
+let address=document.getElementById("address").value
+
+let msg=
+
+`New Order
+
+Name: ${name}
+Phone: ${phone}
+Address: ${address}
+
+${billText}`
+
+let url="https://wa.me/"+PHONE+"?text="+encodeURIComponent(msg)
+
+window.open(url)
+
+}
+
+function downloadPDF(){
+
+const {jsPDF}=window.jspdf
+
+let doc=new jsPDF()
+
+doc.text(billText,20,20)
+
+doc.save("egg-master-bill.pdf")
+
+}
+
 </script>
+
+</body>
+</html>
