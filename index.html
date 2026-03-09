@@ -17,34 +17,32 @@
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     body { font-family: 'Outfit', sans-serif; background: var(--black); color: var(--white); overflow-x: hidden; }
 
-    /* Background */
     #bg-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.3; }
 
-    /* Nav */
     nav { 
-      position: fixed; top: 0; width: 100%; height: 75px; background: rgba(0,0,0,0.9);
+      position: fixed; top: 0; width: 100%; height: 75px; background: rgba(0,0,0,0.95);
       backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: space-between;
       padding: 0 5%; z-index: 1000; border-bottom: 1px solid var(--gold);
     }
-    .logo { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--gold); letter-spacing: 2px; font-weight: 900; }
+    .logo { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--gold); font-weight: 900; }
 
-    /* Hero */
+    /* Language Switcher */
+    .lang-box { display: flex; gap: 5px; background: #222; padding: 5px; border-radius: 50px; border: 1px solid var(--gold); }
+    .lang-btn { background: none; border: none; color: #888; font-size: 0.7rem; cursor: pointer; padding: 5px 10px; border-radius: 50px; font-weight: bold; }
+    .lang-btn.active { background: var(--gold-gradient); color: black; }
+
     .hero { text-align: center; padding: 130px 20px 40px; }
-    .hero h1 { font-family: 'Playfair Display', serif; font-size: 2.8rem; background: var(--gold-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .status { color: #25D366; font-size: 0.8rem; border: 1px solid #25D366; padding: 4px 15px; border-radius: 50px; display: inline-block; margin-top: 10px; }
+    .hero h1 { font-family: 'Playfair Display', serif; font-size: 2.5rem; background: var(--gold-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-    /* Grid */
     .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
     .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
-    .card-lux { background: var(--dark-grey); border: 1px solid #222; overflow: hidden; position: relative; transition: 0.4s; }
-    .card-lux:hover { border-color: var(--gold); transform: translateY(-5px); }
-    .card-lux img { width: 100%; height: 240px; object-fit: cover; filter: brightness(0.8); }
+    .card-lux { background: var(--dark-grey); border: 1px solid #222; overflow: hidden; transition: 0.4s; border-radius: 8px; }
+    .card-lux img { width: 100%; height: 240px; object-fit: cover; }
     .card-info { padding: 20px; text-align: center; }
     .price { font-size: 1.5rem; color: var(--gold); margin: 10px 0; font-weight: 700; display: block; }
     
-    .btn-gold { background: var(--gold-gradient); color: black; border: none; padding: 12px; font-weight: 900; cursor: pointer; width: 100%; text-transform: uppercase; }
+    .btn-gold { background: var(--gold-gradient); color: black; border: none; padding: 12px; font-weight: 900; cursor: pointer; width: 100%; text-transform: uppercase; border-radius: 4px; }
 
-    /* Cart Drawer */
     #cart-slide {
       position: fixed; top: 0; right: -100%; width: 100%; max-width: 400px; height: 100%;
       background: #0d0d0d; z-index: 2000; transition: 0.5s; border-left: 2px solid var(--gold);
@@ -53,18 +51,16 @@
     #cart-slide.active { right: 0; }
     .cart-body { flex: 1; overflow-y: auto; padding: 20px; }
     .cart-item { display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid #222; }
-    .qty-ctrl { display: flex; gap: 10px; align-items: center; border: 1px solid var(--gold); padding: 2px 8px; border-radius: 50px; }
 
-    /* Modal */
-    .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 3000; display: none; align-items: center; justify-content: center; }
-    .modal-content { background: #111; padding: 25px; border: 1px solid var(--gold); width: 90%; max-width: 400px; text-align: center; }
-    
-    #bill-area { background: white; color: black; padding: 20px; border-radius: 10px; margin-bottom: 20px; }
-    .bill-logo { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 900; border-bottom: 2px solid black; margin-bottom: 10px; display: inline-block; }
+    /* Form Styles */
+    .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 3000; display: none; align-items: center; justify-content: center; overflow-y: auto; padding: 20px; }
+    .modal-content { background: #111; padding: 25px; border: 1px solid var(--gold); width: 100%; max-width: 450px; text-align: center; }
+    .form-group { margin-bottom: 15px; text-align: left; }
+    .form-group label { display: block; color: var(--gold); font-size: 0.8rem; margin-bottom: 5px; text-transform: uppercase; }
+    .form-group input, .form-group textarea { width: 100%; background: #1a1a1a; border: 1px solid #333; color: white; padding: 12px; border-radius: 5px; }
 
-    .btn-pay { width: 100%; padding: 15px; margin-top: 10px; border: none; font-weight: 900; cursor: pointer; border-radius: 5px; }
-    .btn-cod { background: #333; color: white; }
-    .btn-online { background: #25D366; color: white; }
+    #bill-area { background: white; color: black; padding: 20px; border-radius: 10px; text-align: center; display: none; }
+    .btn-pay { flex: 1; padding: 12px; border: none; font-weight: 900; cursor: pointer; border-radius: 5px; }
   </style>
 </head>
 <body>
@@ -74,77 +70,107 @@
 
 <nav>
   <div class="logo">EGG MASTER</div>
-  <button onclick="toggleCart(true)" style="background:none; border:1px solid var(--gold); color:var(--gold); padding:8px 18px; border-radius:50px; cursor:pointer;">
-    CART (<span id="cart-count">0</span>)
+  <div class="lang-box">
+    <button class="lang-btn" onclick="changeLang('en')">EN</button>
+    <button class="lang-btn active" onclick="changeLang('gu')">GU</button>
+    <button class="lang-btn" onclick="changeLang('hi')">HI</button>
+  </div>
+  <button onclick="toggleCart(true)" style="background:none; border:1px solid var(--gold); color:var(--gold); padding:8px 15px; border-radius:50px; font-size:0.8rem;">
+    🛒 (<span id="cart-count">0</span>)
   </button>
 </nav>
 
 <div class="hero">
-  <h1>Elite Egg Hub</h1>
-  <div class="status">● WE ARE OPEN (24/7)</div>
+  <h1 id="hero-title">Elite Egg Hub</h1>
+  <p id="hero-sub" style="color:var(--gold)">WE ARE OPEN NOW</p>
 </div>
 
 <div class="container"><div class="grid" id="menu-grid"></div></div>
 
 <div id="cart-slide">
   <div style="padding:25px; background:var(--gold-gradient); color:black; font-weight:900; display:flex; justify-content:space-between;">
-    <span>YOUR SELECTION</span>
+    <span id="cart-title">YOUR ORDER</span>
     <button onclick="toggleCart(false)" style="background:none; border:none; font-size:1.5rem;">✕</button>
   </div>
   <div class="cart-body" id="cart-items"></div>
   <div style="padding:25px; border-top:1px solid #222;">
-    <h2 style="display:flex; justify-content:space-between; margin-bottom:20px;">
-      Total: <span id="total-price" style="color:var(--gold);">₹0</span>
-    </h2>
-    <button class="btn-gold" onclick="openCheckout()">CHECKOUT NOW</button>
+    <h2 style="display:flex; justify-content:space-between; margin-bottom:20px;"><span id="total-txt">Total</span>: <span id="total-price" style="color:var(--gold);">₹0</span></h2>
+    <button class="btn-gold" id="btn-details" onclick="openOrderForm()">ENTER DETAILS</button>
   </div>
 </div>
 
-<div id="checkout-modal" class="modal">
+<div id="order-modal" class="modal">
   <div class="modal-content">
-    <div id="bill-area">
-      <div class="bill-logo">🍳 EGG MASTER</div>
-      <div id="bill-list" style="text-align:left; font-family:monospace; font-size:0.85rem; margin:10px 0;"></div>
-      <hr>
-      <h3 id="bill-total" style="margin-top:10px;"></h3>
-    </div>
-
-    <div id="qr-area" style="display:none; margin-bottom:20px;">
-      <h4 style="color:var(--gold); margin-bottom:10px;">SCAN TO PAY</h4>
-      <img id="upi-qr" style="width:160px; border:4px solid white;">
-      <p style="font-size:0.8rem; margin-top:5px;">ID: ashishchavda9586@oksbi</p>
-    </div>
-
-    <div id="payment-choice">
-      <p>Select Payment Method:</p>
-      <button class="btn-pay btn-cod" onclick="finishOrder('Cash on Delivery (COD)')">COD (Cash on Delivery)</button>
-      <button class="btn-pay btn-online" onclick="showOnlineUI()">Online Payment (QR)</button>
-    </div>
-
-    <button class="btn-gold" id="confirm-online-btn" style="display:none; margin-top:15px;" onclick="finishOrder('Online Paid')">Confirm & Send WhatsApp</button>
+    <h3 id="form-head" style="color:var(--gold); margin-bottom:20px; font-family:'Playfair Display';">ORDER DETAILS</h3>
     
-    <button onclick="location.reload()" style="background:none; border:none; color:#555; margin-top:20px; cursor:pointer;">Cancel</button>
+    <div class="form-group"><label id="label-name">Full Name</label><input type="text" id="cust-name"></div>
+    <div class="form-group"><label id="label-phone">Mobile</label><input type="tel" id="cust-phone"></div>
+    <div class="form-group"><label id="label-addr">Address</label><textarea id="cust-addr" rows="2"></textarea></div>
+
+    <button class="btn-gold" style="background:#333; color:var(--gold); border:1px dashed var(--gold); margin-bottom:15px;" id="btn-loc" onclick="getLocation()">📍 Share Location</button>
+    <input type="hidden" id="cust-loc" value="Not Shared">
+
+    <div id="payment-section">
+      <div style="display:flex; gap:10px;">
+        <button class="btn-pay" style="background:#444; color:white;" onclick="processFinal('COD')">COD</button>
+        <button class="btn-pay" style="background:#25D366; color:white;" id="btn-online" onclick="showQRSection()">ONLINE</button>
+      </div>
+    </div>
+
+    <div id="qr-section" style="display:none; margin-top:20px;">
+      <img id="upi-qr" style="width:150px; border:4px solid white; margin-bottom:10px;">
+      <p style="font-size:0.7rem;">ashishchavda9586@oksbi</p>
+      <button class="btn-gold" id="btn-send" style="margin-top:15px;" onclick="processFinal('Online Paid')">SEND ORDER</button>
+    </div>
+
+    <div id="bill-area">
+        <div style="font-size:1.5rem; font-weight:900;">🍳 EGG MASTER</div>
+        <p id="bill-cust"></p><hr>
+        <div id="bill-list"></div><hr>
+        <h3 id="bill-total"></h3>
+    </div>
+
+    <br><button onclick="document.getElementById('order-modal').style.display='none'" id="btn-back" style="background:none; border:none; color:#555; cursor:pointer;">Go Back</button>
   </div>
 </div>
 
 <script>
   const PHONE = "+919586096174";
   const MY_UPI = "ashishchavda9586@oksbi";
-  
+
+  const translations = {
+    en: {
+      heroTitle: "Elite Egg Hub", heroSub: "WE ARE OPEN NOW", cartTitle: "YOUR ORDER", total: "Total", details: "ENTER DETAILS",
+      formHead: "ORDER DETAILS", name: "Full Name", phone: "Mobile", addr: "Address", loc: "Share Location",
+      online: "ONLINE PAY", send: "SEND ORDER", back: "Go Back", added: "Added to cart"
+    },
+    gu: {
+      heroTitle: "એલિટ એગ હબ", heroSub: "અમે અત્યારે ખુલ્લા છીએ", cartTitle: "તમારો ઓર્ડર", total: "કુલ", details: "માહિતી ભરો",
+      formHead: "ઓર્ડરની વિગત", name: "પૂરું નામ", phone: "મોબાઈલ નંબર", addr: "સરનામું", loc: "લાઇવ લોકેશન",
+      online: "ઓનલાઇન પે", send: "ઓર્ડર મોકલો", back: "પાછા જાઓ", added: "કાર્ટમાં ઉમેર્યું"
+    },
+    hi: {
+      heroTitle: "एलीट एग हब", heroSub: "हम अभी खुले हैं", cartTitle: "आपका ऑर्डर", total: "कुल", details: "विवરણ भरें",
+      formHead: "ऑर्डर का विवरण", name: "पूरा नाम", phone: "मोबाइल नंबर", addr: "पता", loc: "लाइव लोकेशन",
+      online: "ऑनलाइन पे", send: "ऑर्डर भेजें", back: "वापस जाएं", added: "कार्ट में जोड़ा गया"
+    }
+  };
+
   const menu = [
-    { id: 1, name: "Boiled Egg Fry", price: 60, img: "https://i.ibb.co/xSdzbzzf/boild-egg-fry.jpg" },
-    { id: 2, name: "Bombay Omlet", price: 60, img: "https://i.ibb.co/vv1xsk7G/bombe-omlet.jpg" },
-    { id: 3, name: "Bread Omlet", price: 60, img: "https://i.ibb.co/JRS6Lcyc/bread-omlet.jpg" },
-    { id: 4, name: "Egg Bhurji", price: 60, img: "https://i.ibb.co/4Rh3gjss/egg-bhurji.jpg" },
-    { id: 5, name: "Egg Kheema", price: 60, img: "https://i.ibb.co/7NJbpHnw/egg-khima.jpg" },
-    { id: 6, name: "Egg Lachko", price: 80, img: "https://i.ibb.co/LDhLfpZy/egg-Lachko.jpg" },
-    { id: 7, name: "Egg Masala Tikka", price: 60, img: "https://i.ibb.co/8DgfRBnK/egg-mashala-tikka.jpg" },
-    { id: 8, name: "Gujarati Egg Curry", price: 60, img: "https://i.ibb.co/sdhXXfNw/gujrati-egg-curry.jpg" },
-    { id: 9, name: "Masala Egg", price: 50, img: "https://i.ibb.co/QvV7YG8W/masala-egg.jpg" },
-    { id: 10, name: "Surti Gotalo", price: 80, img: "https://i.ibb.co/pv1FGXCr/surti-gotalo.jpg" }
+    { id: 1, names: {en: "Boiled Egg Fry", gu: "બાફેલા ઈંડા ફ્રાય", hi: "उबले हुए अंडे फ्राई"}, price: 50, img: "https://i.ibb.co/xSdzbzzf/boild-egg-fry.jpg" },
+    { id: 2, names: {en: "Bombay Omlet", gu: "બોમ્બે ઓમ્લેટ", hi: "बॉम्बे ऑमलेट"}, price: 60, img: "https://i.ibb.co/vv1xsk7G/bombe-omlet.jpg" },
+    { id: 3, names: {en: "Bread Omlet", gu: "બ્રેડ ઓમ્લેટ", hi: "ब्रेड ऑमलेट"}, price: 60, img: "https://i.ibb.co/JRS6Lcyc/bread-omlet.jpg" },
+    { id: 4, names: {en: "Egg Bhurji", gu: "ઈંડાની ભુરજી", hi: "अंडा भुर्जी"}, price: 60, img: "https://i.ibb.co/4Rh3gjss/egg-bhurji.jpg" },
+    { id: 5, names: {en: "Egg Kheema", gu: "ઈંડા ખીમા", hi: "अंडा कीमा"}, price: 60, img: "https://i.ibb.co/7NJbpHnw/egg-khima.jpg" },
+    { id: 6, names: {en: "Egg Lachko", gu: "ઈંડા લચકો", hi: "अंडा लचको"}, price: 80, img: "https://i.ibb.co/LDhLfpZy/egg-Lachko.jpg" },
+    { id: 7, names: {en: "Egg Tikka", gu: "ઈંડા મસાલા ટીક્કા", hi: "अंडा मसाला टिक्का"}, price: 60, img: "https://i.ibb.co/8DgfRBnK/egg-mashala-tikka.jpg" },
+    { id: 8, names: {en: "Egg Curry", gu: "ગુજરાતી ઈંડા કરી", hi: "गुजराती अंडा करी"}, price: 50, img: "https://i.ibb.co/sdhXXfNw/gujrati-egg-curry.jpg" },
+    { id: 9, names: {en: "Masala Egg", gu: "મસાલા ઈંડા", hi: "मसाला अंडा"}, price: 50, img: "https://i.ibb.co/QvV7YG8W/masala-egg.jpg" },
+    { id: 10, names: {en: "Surti Gotalo", gu: "સુરતી ગોટાળો", hi: "સુરતી ગોટાલો"}, price: 80, img: "https://i.ibb.co/pv1FGXCr/surti-gotalo.jpg" }
   ];
 
   let cart = [];
+  let currentLang = 'gu';
 
   // ThreeJS BG
   const scene = new THREE.Scene();
@@ -153,23 +179,34 @@
   renderer.setSize(window.innerWidth, window.innerHeight);
   document.getElementById('bg-canvas').appendChild(renderer.domElement);
   const shape = new THREE.Mesh(new THREE.TorusKnotGeometry(10, 3, 100, 16), new THREE.MeshPhongMaterial({ color: 0xD4AF37, wireframe: true }));
-  scene.add(shape);
-  scene.add(new THREE.AmbientLight(0xffffff, 1));
-  camera.position.z = 30;
+  scene.add(shape); scene.add(new THREE.AmbientLight(0xffffff, 1)); camera.position.z = 30;
   function animate() { requestAnimationFrame(animate); shape.rotation.y += 0.005; renderer.render(scene, camera); }
   animate();
 
-  // Menu
+  function changeLang(l) {
+    currentLang = l;
+    document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.innerText.toLowerCase() === l));
+    const t = translations[l];
+    document.getElementById('hero-title').innerText = t.heroTitle;
+    document.getElementById('hero-sub').innerText = t.heroSub;
+    document.getElementById('cart-title').innerText = t.cartTitle;
+    document.getElementById('total-txt').innerText = t.total;
+    document.getElementById('btn-details').innerText = t.details;
+    document.getElementById('form-head').innerText = t.formHead;
+    document.getElementById('label-name').innerText = t.name;
+    document.getElementById('label-phone').innerText = t.phone;
+    document.getElementById('label-addr').innerText = t.addr;
+    document.getElementById('btn-loc').innerText = "📍 " + t.loc;
+    document.getElementById('btn-online').innerText = t.online;
+    document.getElementById('btn-send').innerText = t.send;
+    document.getElementById('btn-back').innerText = t.back;
+    renderMenu();
+    updateUI();
+  }
+
   function renderMenu() {
     document.getElementById('menu-grid').innerHTML = menu.map(i => `
-      <div class="card-lux">
-        <img src="${i.img}">
-        <div class="card-info">
-          <h3>${i.name}</h3>
-          <span class="price">₹${i.price}</span>
-          <button class="btn-gold" onclick="addToCart(${i.id})">Add to selection</button>
-        </div>
-      </div>`).join('');
+      <div class="card-lux"><img src="${i.img}"><div class="card-info"><h3>${i.names[currentLang]}</h3><span class="price">₹${i.price}</span><button class="btn-gold" onclick="addToCart(${i.id})">${currentLang === 'en' ? 'ADD TO CART' : 'ઓર્ડર કરો'}</button></div></div>`).join('');
   }
 
   function addToCart(id) {
@@ -180,60 +217,52 @@
     updateUI();
   }
 
-  function remove(id) {
-    const idx = cart.findIndex(c => c.id === id);
-    if(idx > -1) { if(cart[idx].qty > 1) cart[idx].qty--; else cart.splice(idx, 1); }
-    updateUI();
-  }
-
   function updateUI() {
     let t = 0, c = 0;
     document.getElementById('cart-items').innerHTML = cart.map(i => {
       t += (i.price * i.qty); c += i.qty;
-      return `<div class="cart-item">
-        <div><b>${i.name}</b><br>₹${i.price * i.qty}</div>
-        <div class="qty-ctrl">
-          <button onclick="remove(${i.id})" style="background:none; border:none; color:white;">-</button>
-          <span>${i.qty}</span>
-          <button onclick="addToCart(${i.id})" style="background:none; border:none; color:white;">+</button>
-        </div>
-      </div>`;
+      return `<div class="cart-item"><div><b>${i.names[currentLang]}</b><br>₹${i.price * i.qty}</div><div>x${i.qty}</div></div>`;
     }).join('');
     document.getElementById('total-price').innerText = "₹" + t;
     document.getElementById('cart-count').innerText = c;
   }
 
   function toggleCart(s) { document.getElementById('cart-slide').classList.toggle('active', s); }
+  function openOrderForm() { if(cart.length === 0) return; document.getElementById('order-modal').style.display = 'flex'; }
 
-  function openCheckout() {
-    if(cart.length === 0) return alert("Selection is empty!");
-    const total = document.getElementById('total-price').innerText;
-    document.getElementById('bill-list').innerHTML = cart.map(i => `${i.name} x${i.qty} = ₹${i.price*i.qty}`).join('<br>');
-    document.getElementById('bill-total').innerText = "Grand Total: " + total;
-    document.getElementById('upi-qr').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=${MY_UPI}&pn=EggMaster&am=${total.replace('₹','')}&cu=INR`;
-    document.getElementById('checkout-modal').style.display = 'flex';
+  function getLocation() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((pos) => {
+        document.getElementById('cust-loc').value = `https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`;
+        document.getElementById('btn-loc').innerText = "✅ Captured!";
+      });
+    }
   }
 
-  function showOnlineUI() {
-    document.getElementById('qr-area').style.display = 'block';
-    document.getElementById('confirm-online-btn').style.display = 'block';
-    document.getElementById('payment-choice').style.display = 'none';
+  function showQRSection() {
+    const total = document.getElementById('total-price').innerText.replace('₹','');
+    document.getElementById('upi-qr').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=${MY_UPI}&pn=EggMaster&am=${total}&cu=INR`;
+    document.getElementById('qr-section').style.display = 'block';
+    document.getElementById('payment-section').style.display = 'none';
   }
 
-  async function finishOrder(method) {
-    // 1. Download Bill
+  async function processFinal(method) {
+    const name = document.getElementById('cust-name').value;
+    const phone = document.getElementById('cust-phone').value;
+    const addr = document.getElementById('cust-addr').value;
+    if(!name || !phone || !addr) return alert("Fill all details!");
+
+    document.getElementById('bill-area').style.display = 'block';
+    document.getElementById('bill-cust').innerText = `Name: ${name} | Phone: ${phone}\nAddress: ${addr}`;
+    document.getElementById('bill-list').innerHTML = cart.map(i => `${i.names['en']} x${i.qty} = ₹${i.price*i.qty}`).join('<br>');
+    document.getElementById('bill-total').innerText = "Total: " + document.getElementById('total-price').innerText;
+    
     const canvas = await html2canvas(document.getElementById('bill-area'));
     const link = document.createElement('a');
-    link.download = `Bill_${Date.now()}.jpg`;
-    link.href = canvas.toDataURL();
-    link.click();
+    link.download = `EggMaster_Bill.jpg`; link.href = canvas.toDataURL(); link.click();
 
-    // 2. Send WhatsApp (Direct Fix)
-    let items = cart.map(i => `• ${i.name} (x${i.qty})`).join('%0A');
-    const total = document.getElementById('total-price').innerText;
-    const msg = `*EGG MASTER ORDER*%0A━━━━━━━━━━━━━━%0A${items}%0A━━━━━━━━━━━━━━%0A*TOTAL:* ${total}%0A*PAYMENT:* ${method}%0A%0A_Please confirm my order._`;
-    
-    // Yaha trigger fix kiya gaya hai
+    let items = cart.map(i => `• ${i.names[currentLang]} (x${i.qty})`).join('%0A');
+    const msg = `*NEW ORDER - EGG MASTER*%0A━━━━━━━━━━━━━━%0A*Name:* ${name}%0A*Phone:* ${phone}%0A*Address:* ${addr}%0A*Location:* ${document.getElementById('cust-loc').value}%0A━━━━━━━━━━━━━━%0A*Items:*%0A${items}%0A━━━━━━━━━━━━━━%0A*Total:* ${document.getElementById('total-price').innerText}%0A*Payment:* ${method}`;
     window.location.href = `https://wa.me/${PHONE}?text=${msg}`;
   }
 
