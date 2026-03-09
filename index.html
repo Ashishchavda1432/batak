@@ -1,543 +1,269 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="gu">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Egg Master | Gujarat's Premium Egg Dishes</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Egg Master | Luxury Elite Edition</title>
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Outfit:wght@300;400;700&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --gold: #D4AF37; --black: #0A0A0A; --dark-grey: #151515; --white: #FFFFFF;
+      --gold-gradient: linear-gradient(135deg, #D4AF37 0%, #F1D37E 50%, #B8860B 100%);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
+    body { font-family: 'Outfit', sans-serif; background: var(--black); color: var(--white); overflow-x: hidden; }
+
+    /* --- Background 3D --- */
+    #bg-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.3; }
+
+    /* --- Logo/Nav --- */
+    nav { 
+      position: fixed; top: 0; width: 100%; height: 80px; background: rgba(0,0,0,0.95);
+      backdrop-filter: blur(15px); display: flex; align-items: center; justify-content: space-between;
+      padding: 0 5%; z-index: 1000; border-bottom: 1px solid var(--gold);
+    }
+    .main-logo { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--gold); text-transform: uppercase; letter-spacing: 2px; }
+
+    /* --- Hero --- */
+    .hero { text-align: center; padding: 150px 20px 60px; }
+    .hero h1 { font-family: 'Playfair Display', serif; font-size: 3rem; background: var(--gold-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .timing { border: 1px solid var(--gold); padding: 5px 20px; border-radius: 50px; font-size: 0.8rem; color: var(--gold); margin-top: 10px; display: inline-block; }
+
+    /* --- Menu --- */
+    .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px; }
+    .card-lux { background: var(--dark-grey); border: 1px solid #333; transition: 0.4s; overflow: hidden; position: relative; }
+    .card-lux:hover { border-color: var(--gold); transform: translateY(-10px); }
+    .card-lux img { width: 100%; height: 250px; object-fit: cover; }
+    .card-info { padding: 20px; text-align: center; }
+    .price { font-size: 1.5rem; color: var(--gold); margin: 10px 0; display: block; font-weight: 700; }
     
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/gsap.min.js"></script> <style>
-        /* --- CORE DESIGN & THEME --- */
-        :root {
-            --primary: #FFB800; /* Gold */
-            --dark: #1E1104;    /* Premium Deep Brown */
-            --shell: #FFF9F0;   /* Light Cream */
-            --accent: #FF4B2B;  /* Orange-Red for Price */
-            --bg-glass: rgba(30, 17, 4, 0.85); /* For Hero Text & Overlays */
-            --border-radius-card: 20px 0 20px 20px; /* Unique Card Border */
-        }
-        
-        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; transition: all 0.2s ease; }
-        body { font-family: 'Poppins', sans-serif; background: var(--shell); color: var(--dark); overflow-x: hidden; }
+    .btn-gold { 
+      background: var(--gold-gradient); color: black; border: none; padding: 12px 25px; 
+      font-weight: 900; cursor: pointer; text-transform: uppercase; width: 100%; letter-spacing: 1px;
+    }
 
-        /* --- STICKY NAVIGATION --- */
-        nav { 
-            position: fixed; top: 0; width: 100%; height: 75px; background: white; 
-            display: flex; align-items: center; justify-content: space-between; 
-            padding: 0 5%; z-index: 1000; box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-        .logo { font-size: 1.8rem; font-weight: 900; color: var(--dark); text-transform: uppercase; letter-spacing: 2px; }
-        .logo span { color: var(--primary); }
+    /* --- Cart Slide --- */
+    #cart-slide {
+      position: fixed; top: 0; right: -100%; width: 100%; max-width: 400px; height: 100%;
+      background: #0d0d0d; z-index: 2000; transition: 0.5s; border-left: 2px solid var(--gold);
+      display: flex; flex-direction: column;
+    }
+    #cart-slide.active { right: 0; }
+    .cart-body { flex: 1; overflow-y: auto; padding: 20px; }
+    .cart-item { display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid #222; }
+    .qty-box { display: flex; align-items: center; gap: 10px; border: 1px solid var(--gold); padding: 2px 10px; border-radius: 50px; }
 
-        /* --- LANGUAGE SELECTOR & CART --- */
-        .nav-controls { display: flex; align-items: center; gap: 20px; }
-        .lang-select { 
-            padding: 8px 12px; border-radius: 20px; border: 1px solid #ddd; cursor: pointer; background: white; 
-            font-size: 0.9rem; font-weight: bold; font-family: inherit; 
-        }
-        .lang-select:focus { border-color: var(--primary); box-shadow: 0 0 5px var(--primary); }
-        .cart-trigger {
-            background: var(--dark); color: white; border: none; padding: 10px 20px; border-radius: 50px; cursor: pointer; 
-            display: flex; gap: 8px; align-items: center; font-weight: bold; transition: 0.3s;
-        }
-        .cart-trigger:hover { background: var(--accent); }
+    /* --- Checkout Modal --- */
+    .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 3000; display: none; align-items: center; justify-content: center; }
+    .modal-content { background: #111; padding: 30px; border: 1px solid var(--gold); width: 95%; max-width: 450px; text-align: center; }
+    
+    /* Bill Styling with Logo */
+    #bill-canvas { background: white; color: black; padding: 20px; text-align: center; margin-bottom: 20px; border-radius: 10px; }
+    .bill-logo { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: #000; border-bottom: 2px solid #000; display: inline-block; margin-bottom: 10px; font-weight: 900; }
+    
+    .pay-options { display: flex; gap: 10px; margin-top: 20px; }
+    .pay-btn { flex: 1; padding: 15px; border-radius: 5px; cursor: pointer; font-weight: 900; border: none; }
+    .cod { background: #333; color: white; }
+    .online { background: #25D366; color: white; }
 
-        /* --- HERO SECTION WITH 3D FARMING BACKGROUND --- */
-        .hero { 
-            position: relative; margin-top: 75px; height: 50vh; width: 100%; 
-            display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            color: white; text-align: center; border-radius: 0 0 50px 50px; overflow: hidden;
-            box-shadow: inset 0 -20px 30px rgba(0,0,0,0.5);
-        }
-        /* The requested unique 3D floating farming/rural hero image link */
-        .hero::before {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background-image: url('https://img.pixers.pics/pho_wat(s3:700/FO/65/59/01/29/700_FO65590129_5f30e42d99d3d3a4b9c7b94a8190772f.jpg,700,432,cms:2018/10/5bd1b6b8d2b97_fb_700x420.png,px:300,py:150)/wall-murals-floating-country-farming.jpg.jpg');
-            background-size: cover; background-position: center; opacity: 0.8; z-index: -1;
-            transform: scale(1.1); filter: blur(2px);
-        }
-        .hero-content {
-            background: var(--bg-glass); padding: 30px; border-radius: 25px; backdrop-filter: blur(5px);
-            border: 2px solid var(--primary);
-        }
-        
-        /* --- TITLE EXPLOSION EFFECT --- */
-        #main-title { 
-            font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 900; line-height: 1.1; margin-bottom: 10px; cursor: pointer; user-select: none;
-            text-transform: uppercase; letter-spacing: 2px;
-        }
-        /* Styling for the exploded pieces */
-        .explode-piece {
-            position: absolute; display: inline-block; pointer-events: none;
-            color: var(--primary); font-weight: bold; text-transform: uppercase;
-        }
-
-        .timing-info { 
-            font-weight: bold; font-size: 0.9rem; color: #ddd; margin-top: 10px; 
-        }
-
-        /* --- ITEM SCROLLING OVER UNIQUE FARMING BACKGROUND --- */
-        .scrolling-container {
-            position: relative; padding: 40px 5%;
-        }
-        /* Background image for scrolling section (similar to hero but more repeating) */
-        .scrolling-container::before {
-            content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-image: url('https://img.pixers.pics/pho_wat(s3:700/FO/65/59/01/29/700_FO65590129_5f30e42d99d3d3a4b9c7b94a8190772f.jpg,700,432,cms:2018/10/5bd1b6b8d2b97_fb_700x420.png,px:300,py:150)/wall-murals-floating-country-farming.jpg.jpg');
-            background-size: repeat; opacity: 0.05; z-index: -2;
-        }
-
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px; max-width: 1400px; margin: 0 auto; }
-        
-        /* --- UNIQUE ITEM CARDS & BORDERS --- */
-        .card { 
-            background: white; border-radius: var(--border-radius-card); overflow: hidden; 
-            box-shadow: 0 8px 30px rgba(0,0,0,0.08); transition: 0.4s; position: relative; 
-            border: 2px solid transparent; 
-        }
-        .card:hover { transform: translateY(-10px); box-shadow: 0 15px 40px rgba(0,0,0,0.15); border-color: var(--primary); }
-        
-        .img-wrap { 
-            height: 220px; overflow: hidden; position: relative; cursor: zoom-in; 
-            border-radius: var(--border-radius-card); /* Border radius matches card */
-            border-bottom: 3px solid #eee; /* Simple unique separation */
-        }
-        .card img { width: 100%; height: 100%; object-fit: cover; transition: 0.6s; }
-        .card:hover .img-wrap img { scale: 1.1; }
-        
-        .info { padding: 20px; text-align: center; }
-        .dish-name { font-size: 1.3rem; font-weight: 800; color: var(--dark); margin-bottom: 5px; }
-        .price { font-size: 1.5rem; font-weight: 900; color: var(--accent); margin: 10px 0; display: block; }
-        
-        .add-btn { 
-            background: var(--primary); border: none; width: 100%; padding: 14px; 
-            border-radius: 50px; font-weight: 800; font-size: 1rem; cursor: pointer; 
-            color: var(--dark); transition: 0.3s; text-transform: uppercase;
-        }
-        .add-btn:hover { background: var(--dark); color: white; }
-
-        /* --- SHOP CLOSED STATUS --- */
-        .btn-closed { background: #ccc !important; cursor: not-allowed !important; color: #666; pointer-events: none; }
-
-        /* --- CART DRAWER --- */
-        #cart-drawer {
-            position: fixed; top: 0; right: -110%; width: 100%; max-width: 420px; height: 100%;
-            background: white; z-index: 2500; transition: 0.5s; box-shadow: -10px 0 40px rgba(0,0,0,0.15);
-            display: flex; flex-direction: column;
-        }
-        #cart-drawer.active { right: 0; }
-        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 2000; display: none; backdrop-filter: blur(3px); }
-        .drawer-header { padding: 20px; background: var(--dark); color: white; display: flex; justify-content: space-between; align-items: center; }
-        #cart-list { flex: 1; overflow-y: auto; padding: 20px; }
-        .cart-item { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #eee; }
-        .cart-item img { width: 60px; height: 60px; border-radius: 10px; object-fit: cover; }
-        .cart-footer { padding: 25px; border-top: 2px solid var(--primary); background: #fbfbfb; }
-
-        /* --- ORDER MODAL (POPUP) --- */
-        .modal {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 3000;
-            display: none; align-items: center; justify-content: center; padding: 20px;
-        }
-        .modal-content { 
-            background: white; padding: 30px; border-radius: 30px; text-align: center; 
-            max-width: 450px; width: 100%; border: 5px solid var(--primary);
-        }
-        .confirm-btn { 
-            background: #25D366; color: white; border: none; padding: 15px; border-radius: 50px; 
-            font-weight: bold; cursor: pointer; width: 100%; margin-top: 20px; font-size: 1.1rem; 
-        }
-
-        /* --- NON-EDITABLE BILL (JPG) --- */
-        #bill-container {
-            position: absolute; left: -9999px; width: 380px; padding: 40px; background: white;
-            text-align: center; border: 10px solid var(--primary); color: #000; font-family: 'Times New Roman', serif;
-        }
-
-        /* --- IMAGE ZOOM MODAL --- */
-        #zoomModal { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 5000; display: none; align-items: center; justify-content: center; padding: 20px; }
-        #zoomModal img { max-width: 100%; max-height: 80vh; border-radius: 10px; box-shadow: 0 0 50px rgba(255,184,0,0.3); }
-
-        /* --- MOBILE OPTIMIZATION --- */
-        @media (max-width: 600px) {
-            nav { padding: 0 3%; }
-            .logo { font-size: 1.4rem; }
-            .hero { height: 40vh; }
-            .grid { grid-template-columns: 1fr; gap: 20px; }
-            .card img { height: 180px; }
-            #cart-drawer { width: 100%; }
-        }
-    </style>
+    #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--gold); color: black; padding: 10px 20px; border-radius: 50px; z-index: 9999; display: none; font-weight: bold; }
+  </style>
 </head>
 <body>
 
+<div id="bg-canvas"></div>
+<audio id="crackSound" src="https://www.myinstants.com/media/sounds/egg-crack.mp3"></audio>
+
 <nav>
-  <a href="#" class="logo">EGG<span>MASTER</span></a>
-  <div class="nav-controls">
-    <select class="lang-select" id="langSelect" onchange="changeLanguage()">
-      <option value="en">English</option>
-      <option value="hi">हिन्दी</option>
-      <option value="gu">ગુજરાતી</option>
-    </select>
-    <button class="cart-trigger" onclick="toggleCart(true)">
-      <i class="fas fa-shopping-cart"></i> <span id="cart-count">0</span>
-    </button>
-  </div>
+  <div class="main-logo">EGG MASTER</div>
+  <button onclick="toggleCart(true)" style="background:none; border:1px solid var(--gold); color:var(--gold); padding:8px 20px; border-radius:50px; cursor:pointer;">
+    CART (<span id="cart-count">0</span>)
+  </button>
 </nav>
 
 <div class="hero">
-  <div class="hero-content">
-    <h1 id="main-title" onclick="explodeTitle()">Gujarat's Best Egg Dishes</h1>
-    <div class="timing-badge" id="timing-status">Checking Shop Status...</div>
-    <p class="timing-info">Open: 8:00 AM - 2:00 PM & 7:00 PM - 12:00 AM</p>
-  </div>
+  <h1>Elite Egg Hub</h1>
+  <div class="timing">9 AM - 2 PM | 7 PM - 12 AM</div>
 </div>
 
-<div class="scrolling-container">
+<div class="container">
   <div class="grid" id="menu-grid"></div>
 </div>
 
-<div class="overlay" id="overlay" onclick="toggleCart(false)"></div>
-<div id="cart-drawer">
-  <div class="drawer-header">
-    <h3 id="drawer-title">Your Order</h3>
-    <button onclick="toggleCart(false)" style="color:white; background:none; border:none; font-size:2rem; cursor:pointer;">✕</button>
+<div id="cart-slide">
+  <div style="padding:30px; background:var(--gold-gradient); color:black; font-weight:900; display:flex; justify-content:space-between;">
+    <span>YOUR ORDER</span>
+    <button onclick="toggleCart(false)" style="background:none; border:none; font-size:1.5rem; cursor:pointer;">✕</button>
   </div>
-  <div id="cart-list"></div>
-  <div class="cart-footer">
-    <div style="display:flex; justify-content:space-between; margin-bottom:15px; font-weight:900; font-size:1.4rem;">
-      <span id="total-label">Total:</span> <span id="total-price">₹0</span>
-    </div>
-    <button class="add-btn" id="proceed-btn" onclick="openOrderModal()" style="margin-bottom: 10px;">Proceed to Order</button>
-    <button class="confirm-btn" id="bill-btn" onclick="generateBill()">🧾 Download Bill (JPG)</button>
+  <div class="cart-body" id="cart-items"></div>
+  <div style="padding:30px; border-top:1px solid #333;">
+    <h2 style="display:flex; justify-content:space-between; margin-bottom:20px;">
+      Total: <span id="total-price" style="color:var(--gold);">₹0</span>
+    </h2>
+    <button class="btn-gold" onclick="openPaymentModal()">Place Order Now</button>
   </div>
 </div>
 
-<div id="order-modal" class="modal">
+<div id="checkout-modal" class="modal">
   <div class="modal-content">
-    <h2 id="modal-title">Please Confirm Details</h2>
-    <hr style="margin:15px 0; border:1px solid #eee;">
-    <input type="text" id="cust-name" placeholder="Aapka Naam / નામ" style="width:100%; padding:14px; margin-bottom:12px; border-radius:15px; border:1px solid #ddd;">
-    <textarea id="cust-address" placeholder="Delivery Address / સરનામું" style="width:100%; padding:14px; border-radius:15px; border:1px solid #ddd; height:80px;"></textarea>
-    <button class="confirm-btn" id="whatsapp-btn" onclick="sendToWhatsApp()"><i class="fab fa-whatsapp"></i> Confirm & Send WhatsApp</button>
-    <button onclick="closeOrderModal()" style="border:none; background:none; color:#777; margin-top:10px; cursor:pointer;">Cancel</button>
+    <div id="bill-canvas">
+      <div class="bill-logo">🍳 EGG MASTER</div>
+      <p style="font-size:0.8rem;">Gujarat's Best Taste</p>
+      <div id="bill-items" style="text-align:left; margin:15px 0; font-family:monospace; font-size:0.9rem;"></div>
+      <hr>
+      <h3 id="bill-total" style="margin-top:10px;"></h3>
+    </div>
+
+    <div id="online-pay-section" style="display:none;">
+      <h3 style="color:var(--gold); margin-bottom:10px;">SCAN & PAY ONLINE</h3>
+      <img id="upi-qr" style="width:180px; border:5px solid white; margin-bottom:10px;">
+      <p style="font-size:0.8rem; opacity:0.6;">ashishchavda9586@oksbi</p>
+    </div>
+
+    <p style="margin-top:20px;">Choose Payment Mode:</p>
+    <div class="pay-options">
+      <button class="pay-btn cod" onclick="finalizeOrder('Cash on Delivery (COD)')">COD</button>
+      <button class="pay-btn online" onclick="showOnlinePayment()">Online Pay</button>
+    </div>
+    
+    <button class="btn-gold" onclick="finalizeOrder('Online Paid')" id="done-btn" style="display:none; margin-top:15px;">I Have Paid - Send WhatsApp</button>
+    
+    <br>
+    <button onclick="location.reload()" style="background:none; border:none; color:#555; margin-top:20px; cursor:pointer;">Cancel</button>
   </div>
 </div>
 
-<div id="bill-container">
-  <h1 style="color:#FFB800">EGG MASTER</h1>
-  <p>Premium Egg Dishes | Gujarat</p>
-  <hr style="margin:20px 0; border:1px solid #000;">
-  <div id="bill-content" style="text-align:left; font-family:'Times New Roman', serif;"></div>
-  <hr style="margin:20px 0; border:1px solid #000;">
-  <h2 id="bill-total-disp"></h2>
-  <p style="margin-top:20px; font-style:italic;">Note: This bill is for your reference.</p>
-</div>
-
-<div id="zoomModal" onclick="this.style.display='none'">
-  <img id="zoomImg" src="" alt="Zoomed">
-</div>
+<div id="toast"></div>
 
 <script>
-    // --- WHATSAPP NUMBER & MENU DATA (No extra, exact links provided) ---
-    const WHATSAPP_NUMBER = "+919586096174";
-    const menu = [
-        { id: 1, name: "Boiled Egg Fry", price: 50, img: "https://i.ibb.co/xSdzbzzf/boild-egg-fry.jpg" },
-        { id: 2, name: "Bombay Omlet", price: 60, img: "https://i.ibb.co/vv1xsk7G/bombe-omlet.jpg" },
-        { id: 3, name: "Bread Omlet", price: 60, img: "https://i.ibb.co/JRS6Lcyc/bread-omlet.jpg" },
-        { id: 4, name: "Egg Bhurji", price: 60, img: "https://i.ibb.co/4Rh3gjss/egg-bhurji.jpg" },
-        { id: 5, name: "Egg Kheema", price: 60, img: "https://i.ibb.co/7NJbpHnw/egg-khima.jpg" },
-        { id: 6, name: "Egg Lachko", price: 80, img: "https://i.ibb.co/LDhLfpZy/egg-Lachko.jpg" },
-        { id: 7, name: "Egg Masala Tikka", price: 70, img: "https://i.ibb.co/8DgfRBnK/egg-mashala-tikka.jpg" },
-        { id: 8, name: "Gujarati Egg Curry", price: 60, img: "https://i.ibb.co/sdhXXfNw/gujrati-egg-curry.jpg" },
-        { id: 9, name: "Masala Egg", price: 50, img: "https://i.ibb.co/QvV7YG8W/masala-egg.jpg" },
-        { id: 10, name: "Surti Gotalo", price: 70, img: "https://i.ibb.co/pv1FGXCr/surti-gotalo.jpg" }
-    ];
+  const PHONE = "+919586096174";
+  const MY_UPI = "ashishchavda9586@oksbi";
+  
+  const menu = [
+    { id: 1, name: "Boiled Egg Fry", price: 50, img: "https://i.ibb.co/xSdzbzzf/boild-egg-fry.jpg" },
+    { id: 2, name: "Bombay Omlet", price: 60, img: "https://i.ibb.co/vv1xsk7G/bombe-omlet.jpg" },
+    { id: 3, name: "Bread Omlet", price: 60, img: "https://i.ibb.co/JRS6Lcyc/bread-omlet.jpg" },
+    { id: 4, name: "Egg Bhurji", price: 60, img: "https://i.ibb.co/4Rh3gjss/egg-bhurji.jpg" },
+    { id: 5, name: "Egg Kheema", price: 60, img: "https://i.ibb.co/7NJbpHnw/egg-khima.jpg" },
+    { id: 6, name: "Egg Lachko", price: 80, img: "https://i.ibb.co/LDhLfpZy/egg-Lachko.jpg" },
+    { id: 7, name: "Egg Masala Tikka", price: 70, img: "https://i.ibb.co/8DgfRBnK/egg-mashala-tikka.jpg" },
+    { id: 8, name: "Gujarati Egg Curry", price: , img: "https://i.ibb.co/sdhXXfNw/gujrati-egg-curry.jpg" },
+    { id: 9, name: "Masala Egg", price: 50, img: "https://i.ibb.co/QvV7YG8W/masala-egg.jpg" },
+    { id: 10, name: "Surti Gotalo", price: 80, img: "https://i.ibb.co/pv1FGXCr/surti-gotalo.jpg" }
+  ];
 
-    let cart = [];
-    let isShopOpen = false;
+  let cart = [];
 
-    // --- COMPLETE MULTILINGUAL SYSTEM ---
-    const translations = {
-        en: {
-            title: "Gujarat's Best Egg Dishes",
-            timing: "Checking Status...",
-            info: "Open: 8:00 AM - 2:00 PM & 7:00 PM - 12:00 AM",
-            openStatus: "🟢 SHOP OPEN! Order Now",
-            closedStatus: "🔴 CLOSED: Try 8-2 PM or 7-12 AM",
-            addBtn: "Add +",
-            closedBtn: "Closed",
-            drawerTitle: "Your Order",
-            totalLabel: "Total:",
-            proceedBtn: "Proceed to Order",
-            billBtn: "🧾 Download Bill (JPG)",
-            modalTitle: "Confirm Details",
-            custName: "Aapka Naam / નામ",
-            custAddr: "Delivery Address / સરનામું",
-            whatsappBtn: "Confirm & Send WhatsApp"
-        },
-        hi: {
-            title: "गुजरात के सबसे बेस्ट एग डिशेज",
-            timing: "स्थिति की जाँच...",
-            info: "सुबह 8:00 - 2:00 और शाम 7:00 - 12:00 खुला है",
-            openStatus: "🟢 दुकान खुली है! अभी ऑर्डर करें",
-            closedStatus: "🔴 बंद: सुबह 8-2 या रात 7-12 बजे आएं",
-            addBtn: "+ जोड़ें",
-            closedBtn: "बंद",
-            drawerTitle: "आपका ऑर्डर",
-            totalLabel: "कुल:",
-            proceedBtn: "ऑर्डर करें",
-            billBtn: "🧾 बिल डाउनलोड करें (JPG)",
-            modalTitle: "विवरण की पुष्टि करें",
-            custName: "आपका नाम",
-            custAddr: "डिलीवरी पता",
-            whatsappBtn: "पुष्टि करें और व्हाट्सएप भेजें"
-        },
-        gu: {
-            title: "ગુજરાતની શ્રેષ્ઠ એગ ડીશ",
-            timing: "સ્થિતિ ચકાસી રહ્યા છીએ...",
-            info: "સવારે 8:00 - 2:00 અને સાંજે 7:00 - 12:00 ખુલ્લું છે",
-            openStatus: "🟢 દુકાન ખુલ્લી છે! અત્યારે જ ઓર્ડર કરો",
-            closedStatus: "🔴 બંધ: સવારે 8-2 અથવા રાત્રે 7-12 પ્રયાસ કરો",
-            addBtn: "+ ઉમેરો",
-            closedBtn: "બંધ",
-            drawerTitle: "તમારો ઓર્ડર",
-            totalLabel: "કુલ:",
-            proceedBtn: "ઓર્ડર કરવા આગળ વધો",
-            billBtn: "🧾 બિલ ડાઉનલોડ કરો (JPG)",
-            modalTitle: "વિગતોની પુષ્ટિ કરો",
-            custName: "તમારું નામ",
-            custAddr: "ડિલિવરી સરનામું",
-            whatsappBtn: "પુષ્ટિ કરો અને WhatsApp મોકલો"
-        }
-    };
+  // --- 3D Background ---
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+  const renderer = new THREE.WebGLRenderer({ alpha: true });
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  document.getElementById('bg-canvas').appendChild(renderer.domElement);
+  const knot = new THREE.Mesh(new THREE.TorusKnotGeometry(10, 3, 100, 16), new THREE.MeshPhongMaterial({ color: 0xD4AF37, wireframe: true }));
+  scene.add(knot);
+  scene.add(new THREE.AmbientLight(0xffffff, 1));
+  camera.position.z = 30;
 
-    function changeLanguage() {
-        const lang = document.getElementById('langSelect').value;
-        localStorage.setItem('eggMasterLang', lang); // Save choice
-        applyLanguage(lang);
+  function animate() { requestAnimationFrame(animate); knot.rotation.x += 0.005; renderer.render(scene, camera); }
+  animate();
+
+  // --- Menu UI ---
+  function renderMenu() {
+    const grid = document.getElementById('menu-grid');
+    grid.innerHTML = menu.map(item => `
+      <div class="card-lux">
+        <img src="${item.img}" alt="${item.name}">
+        <div class="card-info">
+          <h3>${item.name}</h3>
+          <span class="price">₹${item.price}</span>
+          <button class="btn-gold" onclick="addToCart(${item.id})">Add to selection</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function addToCart(id) {
+    document.getElementById('crackSound').play();
+    const item = menu.find(m => m.id === id);
+    const existing = cart.find(c => c.id === id);
+    if(existing) existing.qty++;
+    else cart.push({...item, qty: 1});
+    updateCartUI();
+  }
+
+  function removeFromCart(id) {
+    const index = cart.findIndex(c => c.id === id);
+    if(index > -1) {
+      if(cart[index].qty > 1) cart[index].qty--;
+      else cart.splice(index, 1);
     }
+    updateCartUI();
+  }
 
-    function applyLanguage(lang) {
-        const t = translations[lang];
-        if (!t) return;
-        
-        document.getElementById('main-title').innerText = t.title;
-        document.getElementById('drawer-title').innerText = t.drawerTitle;
-        document.getElementById('total-label').innerText = t.totalLabel;
-        document.getElementById('proceed-btn').innerText = t.proceedBtn;
-        document.getElementById('bill-btn').innerText = t.billBtn;
-        document.getElementById('modal-title').innerText = t.modalTitle;
-        document.getElementById('cust-name').placeholder = t.custName;
-        document.getElementById('cust-address').placeholder = t.custAddr;
-        document.getElementById('whatsapp-btn').innerHTML = `<i class="fab fa-whatsapp"></i> ${t.whatsappBtn}`;
-        document.querySelector('.timing-info').innerText = t.info;
+  function updateCartUI() {
+    const list = document.getElementById('cart-items');
+    let total = 0, count = 0;
+    list.innerHTML = cart.map(i => {
+      total += (i.price * i.qty); count += i.qty;
+      return `<div class="cart-item">
+        <div><b>${i.name}</b><br>₹${i.price * i.qty}</div>
+        <div class="qty-box">
+          <button onclick="removeFromCart(${i.id})" style="background:none; border:none; color:white; cursor:pointer;">-</button>
+          <span>${i.qty}</span>
+          <button onclick="addToCart(${i.id})" style="background:none; border:none; color:white; cursor:pointer;">+</button>
+        </div>
+      </div>`;
+    }).join('');
+    document.getElementById('total-price').innerText = "₹" + total;
+    document.getElementById('cart-count').innerText = count;
+  }
 
-        checkShopStatus(); // Update status message in selected language
-        renderMenu(); // Update menu card buttons in selected language
-    }
+  function toggleCart(s) { document.getElementById('cart-slide').classList.toggle('active', s); }
 
-    // --- REGENERATED CORE LOGIC ---
+  // --- Payment & Bill ---
+  function openPaymentModal() {
+    if(cart.length === 0) return alert("Pehle items select karein!");
+    const total = document.getElementById('total-price').innerText;
+    
+    // Fill Bill for Screenshot
+    document.getElementById('bill-items').innerHTML = cart.map(i => `${i.name} x ${i.qty} = ₹${i.price*i.qty}`).join('<br>');
+    document.getElementById('bill-total').innerText = "GRAND TOTAL: " + total;
+    
+    // QR Code
+    document.getElementById('upi-qr').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=${MY_UPI}&pn=EggMaster&am=${total.replace('₹','')}&cu=INR`;
+    
+    document.getElementById('checkout-modal').style.display = 'flex';
+  }
 
-    // 1. Updated Timings & Restriction Logic
-    function checkShopStatus() {
-        const now = new Date();
-        const hour = now.getHours();
-        const minutes = now.getMinutes();
-        const timeVal = hour + minutes/60; // Represents time as a decimal hour
+  function showOnlinePayment() {
+    document.getElementById('online-pay-section').style.display = 'block';
+    document.getElementById('done-btn').style.display = 'block';
+    document.querySelector('.pay-options').style.display = 'none';
+  }
 
-        // 8 AM - 2 PM (8 to 14) and 7 PM - 12 AM (19 to 0)
-        isShopOpen = (timeVal >= 8 && timeVal < 14) || (timeVal >= 19 && timeVal <= 23.99);
-        
-        const statusBox = document.getElementById('timing-status');
-        const lang = document.getElementById('langSelect').value;
-        const t = translations[lang];
+  async function finalizeOrder(method) {
+    // Generate Bill Image (Auto Download)
+    const canvas = await html2canvas(document.getElementById('bill-canvas'));
+    const link = document.createElement('a');
+    link.download = 'EggMaster_Bill.jpg';
+    link.href = canvas.toDataURL();
+    link.click();
 
-        if(isShopOpen) {
-            statusBox.innerHTML = t.openStatus;
-            statusBox.style.background = "#25D366";
-            statusBox.style.color = "white";
-        } else {
-            statusBox.innerHTML = t.closedStatus;
-            statusBox.style.background = var(--accent);
-            statusBox.style.color = "white";
-        }
-    }
+    // Send WhatsApp
+    let items = cart.map(i => `• ${i.name} (x${i.qty})`).join('%0A');
+    const total = document.getElementById('total-price').innerText;
+    const msg = `*EGG MASTER ORDER*%0A━━━━━━━━━━━━━━%0A${items}%0A━━━━━━━━━━━━━━%0A*TOTAL:* ${total}%0A*PAYMENT:* ${method}%0A%0A_Aavse maza!_`;
+    window.open(`https://wa.me/${PHONE}?text=${msg}`, '_blank');
+  }
 
-    // 2. Multilingual Menu Rendering with Unique Card borders and borders
-    function renderMenu() {
-        const grid = document.getElementById('menu-grid');
-        const lang = document.getElementById('langSelect').value;
-        const t = translations[lang];
-
-        grid.innerHTML = menu.map(item => `
-          <div class="card">
-            <div class="img-wrap" onclick="zoomImage('${item.img}')">
-              <img src="${item.img}" alt="${item.name}">
-            </div>
-            <div class="info">
-              <h3 class="dish-name">${item.name}</h3>
-              <span class="price">₹${item.price}</span>
-              <button class="add-btn ${!isShopOpen ? 'btn-closed' : ''}" 
-                      onclick="${isShopOpen ? `addToCart(${item.id})` : `alert('Status: Shop Band hai, Timings dekhein!')`}">
-                ${isShopOpen ? t.addBtn : t.closedBtn}
-              </button>
-            </div>
-          </div>
-        `).join('');
-    }
-
-    // --- TITLE EXPLOSION FUNCTION ---
-    function explodeTitle() {
-        const title = document.getElementById('main-title');
-        const text = title.innerText;
-        const pieces = text.split(' '); // Split text by spaces
-
-        // Clear title text temporarily
-        title.innerHTML = '';
-
-        // Add exploded pieces
-        pieces.forEach((piece, index) => {
-            const span = document.createElement('span');
-            span.className = 'explode-piece';
-            span.innerText = piece;
-            
-            // Random direction and power
-            const angle = Math.random() * Math.PI * 2;
-            const velocity = 200 + Math.random() * 300; // Power
-            const vx = Math.cos(angle) * velocity;
-            const vy = Math.sin(angle) * velocity;
-
-            // Positioning pieces roughly over original title
-            const titleRect = title.getBoundingClientRect();
-            const pieceX = titleRect.left + (titleRect.width / pieces.length) * index + index * 5;
-            const pieceY = titleRect.top;
-
-            span.style.left = pieceX + 'px';
-            span.style.top = pieceY + 'px';
-            
-            document.body.appendChild(span);
-
-            // GSAP Animation: Explode outwards and fall
-            gsap.to(span, {
-                duration: 1.5 + Math.random() * 1,
-                x: vx,
-                y: vy + 400, // Gravity effect
-                rotation: -180 + Math.random() * 360,
-                opacity: 0,
-                scale: 0.5,
-                ease: "power2.out",
-                onComplete: () => {
-                    document.body.removeChild(span); // Clean up
-                }
-            });
-        });
-
-        // Set title back after delay
-        setTimeout(() => {
-            title.innerText = text;
-        }, 1600);
-    }
-
-    // --- OTHER UI & CART LOGIC (Regenerated) ---
-
-    function addToCart(id) {
-        const dish = menu.find(m => m.id === id);
-        const existing = cart.find(c => c.id === id);
-        if(existing) existing.qty++;
-        else cart.push({...dish, qty: 1});
-        updateUI();
-    }
-
-    function updateUI() {
-        const list = document.getElementById('cart-list');
-        let total = 0, count = 0;
-        list.innerHTML = cart.map(item => {
-            total += (item.price * item.qty); count += item.qty;
-            return `
-              <div class="cart-item">
-                <img src="${item.img}">
-                <div style="flex:1"><b>${item.name}</b><br>₹${item.price} × ${item.qty}</div>
-                <button onclick="removeOne(${item.id})" style="padding:5px; border:1px solid #ddd; cursor:pointer;">➖</button>
-              </div>`;
-        }).join('');
-        document.getElementById('total-price').innerText = "₹" + total;
-        document.getElementById('cart-count').innerText = count;
-    }
-
-    function removeOne(id) {
-        const item = cart.find(c => c.id === id);
-        if(item.qty > 1) item.qty--;
-        else cart = cart.filter(c => c.id !== id);
-        updateUI();
-    }
-
-    function toggleCart(show) {
-        document.getElementById('cart-drawer').classList.toggle('active', show);
-        document.getElementById('overlay').style.display = show ? 'block' : 'none';
-    }
-
-    function zoomImage(src) {
-        document.getElementById('zoomImg').src = src;
-        document.getElementById('zoomModal').style.display = 'flex';
-    }
-
-    // --- NON-EDITABLE BILL GENERATION (Regenerated) ---
-    async function generateBill() {
-        if(!cart.length) return alert("Pehle items add karein!");
-
-        const billItems = document.getElementById('bill-content');
-        let total = 0;
-        billItems.innerHTML = cart.map(i => {
-          total += (i.price * i.qty);
-          return `<p style="margin-bottom:8px;">${i.name} x ${i.qty} = ₹${i.price * i.qty}</p>`;
-        }).join('');
-        document.getElementById('bill-total-disp').innerText = "Total Bill: ₹" + total;
-
-        const canvas = await html2canvas(document.getElementById('bill-container'));
-        const imgData = canvas.toDataURL("image/jpeg");
-        
-        const link = document.createElement('a');
-        link.download = 'EggMaster_Bill_ref.jpg';
-        link.href = imgData;
-        link.click();
-    }
-
-    // --- ORDER FINALIZATION via WhatsApp (Regenerated) ---
-    function openOrderModal() {
-        if(cart.length === 0) return alert("Pehle items add karein!");
-        document.getElementById('order-modal').style.display = 'flex';
-    }
-
-    function closeOrderModal() { document.getElementById('order-modal').style.display = 'none'; }
-
-    function sendToWhatsApp() {
-        const name = document.getElementById('cust-name').value;
-        const address = document.getElementById('cust-address').value;
-        if(!name || !address) return alert("Please details bhariye!");
-
-        let total = 0;
-        let itemsText = cart.map(c => {
-          total += (menu.find(m => m.id === c.id).price * c.qty);
-          return `• ${c.name} (x${c.qty})`;
-        }).join("%0A");
-        
-        const msg = `🍳 *NEW ORDER - EGG MASTER*%0A━━━━━━━━━━━━━━━━━━━━%0A👤 *Name:* ${name}%0A📍 *Address:* ${address}%0A━━━━━━━━━━━━━━━━━━━━%0A📦 *Order Items:*%0A${itemsText}%0A━━━━━━━━━━━━━━━━━━━━%0A💰 *Kul Total:* ₹${total}%0A━━━━━━━━━━━━━━━━━━━━`;
-        
-        window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`, '_blank');
-        document.getElementById('order-modal').style.display = 'none';
-        // Optional: cart = []; updateUI(); toggleCart(false);
-    }
-
-    // --- INITIATION & AUTO-STATUS CHECK ---
-    const savedLang = localStorage.getItem('eggMasterLang') || 'en';
-    document.getElementById('langSelect').value = savedLang;
-    applyLanguage(savedLang); // Initiate in selected language
-
-    // Auto check shop status every minute
-    checkShopStatus();
-    setInterval(checkShopStatus, 60000); 
+  renderMenu();
 </script>
-
 </body>
 </html>
