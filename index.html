@@ -183,4 +183,88 @@
     const idx = cart.findIndex(c => c.id === id);
     if(idx > -1) {
         if(cart[idx].qty > 1) cart[idx].qty--;
-        else cart
+        else cart.splice(idx, 1);
+    }
+    updateUI();
+  }
+
+  function updateUI() {
+    let t = 0, c = 0;
+    document.getElementById('cart-items').innerHTML = cart.map(i => {
+      t += (i.price * i.qty); c += i.qty;
+      return `<div class="cart-item">
+        <div style="width:60%"><b>${i.names[currentLang]}</b><br><small>₹${i.price * i.qty}</small></div>
+        <div class="qty-box">
+          <button class="qty-btn" onclick="removeFromCart(${i.id})">-</button>
+          <span>${i.qty}</span>
+          <button class="qty-btn" onclick="addToCart(${i.id})">+</button>
+        </div>
+      </div>`;
+    }).join('');
+    document.getElementById('total-price').innerText = "₹" + t;
+    document.getElementById('cart-count').innerText = c;
+  }
+
+  function toggleCart(s) { document.getElementById('cart-slide').classList.toggle('active', s); }
+  function openOrderForm() { if(cart.length === 0) return; document.getElementById('order-modal').style.display = 'flex'; }
+
+  function getLocation() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((pos) => {
+        document.getElementById('cust-loc').value = `https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`;
+        document.getElementById('btn-loc').innerText = "✅ Captured!";
+      });
+    }
+  }
+
+  function showQRSection() {
+    const total = document.getElementById('total-price').innerText.replace('₹','');
+    document.getElementById('upi-qr').src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=upi://pay?pa=${MY_UPI}&pn=EggMaster&am=${total}&cu=INR`;
+    document.getElementById('qr-section').style.display = 'block';
+  }
+
+  async function processFinal(method) {
+    const name = document.getElementById('cust-name').value;
+    const phone = document.getElementById('cust-phone').value;
+    const addr = document.getElementById('cust-addr').value;
+    const total = document.getElementById('total-price').innerText;
+    const loc = document.getElementById('cust-loc').value;
+
+    if(!name || !phone || !addr) return alert("All fields are required!");
+
+    const token = btoa(`${name}|${total}|${Date.now().toString().slice(-4)}`);
+
+    let itemsTxt = cart.map(i => `• ${i.names[currentLang]} (x${i.qty}) = ₹${i.price*i.qty}`).join('%0A');
+    const msg = `*NEW ORDER - EGG MASTER*%0A━━━━━━━━━━━━━━%0A👤 *Name:* ${name}%0A📞 *Phone:* ${phone}%0A📍 *Addr:* ${addr}%0A🌍 *Loc:* ${loc}%0A━━━━━━━━━━━━━━%0A📦 *Items:*%0A${itemsTxt}%0A━━━━━━━━━━━━━━%0A💰 *TOTAL:* ${total}%0A💳 *PAYMENT:* ${method}%0A🔒 *VERIFY:* ${token}%0A━━━━━━━━━━━━━━%0A_Note: Bill image downloaded!_`;
+    
+    window.location.href = `https://api.whatsapp.com/send?phone=${PHONE}&text=${msg}`;
+
+    document.getElementById('bill-cust-data').innerText = `NAME: ${name}\nPHONE: ${phone}\nADDR: ${addr}`;
+    document.getElementById('bill-items-list').innerHTML = cart.map(i => `${i.names['en']} x${i.qty} = ₹${i.price*i.qty}`).join('<br>');
+    document.getElementById('bill-grand-total').innerText = "TOTAL: " + total;
+    document.getElementById('bill-verify-code').innerText = "HASH: " + token;
+
+    setTimeout(() => {
+        html2canvas(document.getElementById('bill-area')).then(canvas => {
+            const link = document.createElement('a');
+            link.download = `Bill_${name}.jpg`;
+            link.href = canvas.toDataURL("image/jpeg", 0.9);
+            link.click();
+        });
+    }, 1000);
+  }
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+  const renderer = new THREE.WebGLRenderer({ alpha: true });
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  document.getElementById('bg-canvas').appendChild(renderer.domElement);
+  const shape = new THREE.Mesh(new THREE.TorusKnotGeometry(10, 3, 100, 16), new THREE.MeshPhongMaterial({ color: 0xD4AF37, wireframe: true }));
+  scene.add(shape); scene.add(new THREE.AmbientLight(0xffffff, 1)); camera.position.z = 30;
+  function animate() { requestAnimationFrame(animate); shape.rotation.y += 0.005; renderer.render(scene, camera); }
+  animate();
+
+  renderMenu();
+</script>
+</body>
+</html>
