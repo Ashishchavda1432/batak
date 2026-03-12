@@ -368,7 +368,8 @@ nav.scrolled {
   transition:transform 0.75s cubic-bezier(0.4,0.2,0.2,1);
   cursor:pointer;
 }
-.menu-card.flipped{transform:rotateY(180deg)}
+/* FLIP DISABLED */
+/* .menu-card.flipped{transform:rotateY(180deg)} */
 
 /* Card Front */
 .card-front {
@@ -435,71 +436,6 @@ nav.scrolled {
 .card-add-btn span{position:relative;z-index:1}
 .card-add-btn.added{background:#4ade80;border-color:#4ade80;color:#000}
 .card-add-btn.added::before{opacity:0}
-/* Flip hint icon */
-.flip-hint {
-  position:absolute;top:12px;right:12px;z-index:4;
-  width:28px;height:28px;background:rgba(201,162,39,0.15);
-  border:1px solid rgba(201,162,39,0.3);border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  font-size:0.75rem;opacity:0.8;transition:all 0.3s;
-}
-.card-wrapper:hover .flip-hint{opacity:1;background:rgba(201,162,39,0.25)}
-
-/* Card Back */
-.card-back {
-  position:absolute;width:100%;height:100%;
-  backface-visibility:hidden;-webkit-backface-visibility:hidden;
-  transform:rotateY(180deg);
-  border-radius:16px;overflow:hidden;
-  background:linear-gradient(145deg,#0f0f0f,#1a1200);
-  border:1px solid rgba(201,162,39,0.3);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  padding:25px;text-align:center;
-  box-shadow:inset 0 0 40px rgba(201,162,39,0.05);
-}
-.card-back::before {
-  content:'';position:absolute;top:0;left:0;right:0;height:2px;
-  background:var(--gradient-gold);box-shadow:var(--glow);
-}
-.chhas-img-wrap {
-  width:110px;height:110px;border-radius:50%;overflow:hidden;
-  border:2px solid var(--gold);margin-bottom:15px;
-  box-shadow:var(--glow);
-  position:relative;
-}
-.chhas-img-wrap::before {
-  content:'';position:absolute;inset:-4px;border-radius:50%;
-  border:1px solid rgba(201,162,39,0.3);animation:ringPulse 2s ease infinite;
-}
-@keyframes ringPulse{
-  0%,100%{transform:scale(1);opacity:0.5}50%{transform:scale(1.05);opacity:1}
-}
-.chhas-img-wrap img{width:100%;height:100%;object-fit:cover}
-.chhas-title {
-  font-family:'Cormorant Garamond',serif;font-size:1.3rem;
-  color:var(--gold-light);margin-bottom:5px;
-}
-.chhas-sub{font-size:0.8rem;color:var(--text-muted);margin-bottom:6px}
-.chhas-price {
-  font-family:'Rajdhani',sans-serif;font-size:1rem;
-  color:var(--gold);font-weight:600;margin-bottom:18px;
-}
-.chhas-btns{display:flex;flex-direction:column;gap:10px;width:100%}
-.btn-add-chhas {
-  background:var(--gradient-gold);border:none;color:#000;
-  padding:11px 20px;border-radius:30px;cursor:pointer;
-  font-family:'Rajdhani',sans-serif;font-size:0.85rem;
-  font-weight:700;letter-spacing:0.15em;text-transform:uppercase;
-  transition:all 0.3s;
-}
-.btn-add-chhas:hover{transform:scale(1.03);box-shadow:var(--glow-strong)}
-.btn-no-thanks {
-  background:transparent;border:1px solid rgba(255,255,255,0.15);
-  color:var(--text-muted);padding:9px 20px;border-radius:30px;cursor:pointer;
-  font-family:'Rajdhani',sans-serif;font-size:0.8rem;letter-spacing:0.1em;
-  transition:all 0.3s;
-}
-.btn-no-thanks:hover{border-color:rgba(255,255,255,0.3);color:var(--text-primary)}
 
 /* Premium Tag */
 .premium-tag {
@@ -868,7 +804,7 @@ nav.scrolled {
 /* Animations */
 @keyframes fadeInUp{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
 @media(prefers-reduced-motion:reduce){
-  *,*::before,*::after{animation-duration:0.01ms !important;transition-duration:0.01ms !important}
+  *,*::before,**::after{animation-duration:0.01ms !important;transition-duration:0.01ms !important}
 }
 </style>
 </head>
@@ -1119,8 +1055,8 @@ nav.scrolled {
     </div>
     <div class="modal-ornament">❧ ❧ ❧</div>
     <div class="payment-buttons">
-      <button class="payment-btn cash" onclick="submitOrder('Cash On Delivery')" data-translate="cash">💵 Cash on Delivery</button>
-      <button class="payment-btn online" onclick="showPaymentOptions()" data-translate="online">📲 Pay Online</button>
+      <button class="payment-btn cash" onclick="submitOrder('Cash On Delivery')" data-translate="cash">💵 Cash</button>
+      <button class="payment-btn online" onclick="showPaymentOptions()" data-translate="online">📲 Online</button>
     </div>
     <div id="payment-area">
       <p style="text-align:center;margin-bottom:5px;font-size:0.9rem">
@@ -1133,14 +1069,17 @@ nav.scrolled {
       </div>
       <p style="text-align:center;font-size:0.8rem;color:#5D4037;margin-bottom:8px">— OR Select App —</p>
       <div class="payment-apps">
-        <button class="pay-app-btn" onclick="openApp('gpay')">
-          <span class="app-icon">🟢</span>Google Pay
+        <button class="pay-app-btn" onclick="openApp('gpay')" style="background:#fff; color:#000; border:1px solid #ddd;">
+          <span class="app-icon" style="font-size:1.5rem;">G</span> 
+          <span style="display:block; font-size:0.8rem; font-weight:700; margin-top:5px;">Google Pay</span>
         </button>
-        <button class="pay-app-btn" onclick="openApp('phonepe')">
-          <span class="app-icon">🟣</span>PhonePe
+        <button class="pay-app-btn" onclick="openApp('phonepe')" style="background:#5F259F; color:#fff; border:none;">
+          <span class="app-icon" style="font-size:1.5rem;">P</span> 
+          <span style="display:block; font-size:0.8rem; font-weight:700; margin-top:5px;">PhonePe</span>
         </button>
-        <button class="pay-app-btn" onclick="openApp('paytm')">
-          <span class="app-icon">🔵</span>Paytm
+        <button class="pay-app-btn" onclick="openApp('paytm')" style="background:#00BAF2; color:#fff; border:none;">
+          <span class="app-icon" style="font-size:1.5rem;">P</span> 
+          <span style="display:block; font-size:0.8rem; font-weight:700; margin-top:5px;">Paytm</span>
         </button>
       </div>
       <button class="confirm-btn" onclick="submitOrder('Paid Online')">✅ Paid? Confirm & Send Order</button>
@@ -1411,12 +1350,12 @@ const menu=[
   // 12 new items
   {id:10,name:"Egg Full Fry",price:50,img:"https://images.unsplash.com/photo-1525351484163-7529414344d8?w=600&q=80",badge:""},
   {id:11,name:"Masala Omelette",price:60,img:"https://images.unsplash.com/photo-1510693206972-df098062cb71?w=600&q=80",badge:"spicy"},
-  {id:12,name:"Egg Sandwich",price:70,img:"https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=600&q=80",badge:"new"},
-  {id:13,name:"Egg Cheese Omlet",price:80,img:"https://images.unsplash.com/photo-1584278860047-22db9ff82bed?w=600&q=80",badge:"new"},
+ 
+  {id:13,name:"Egg Cheese Omlet",price:90,img:"https://images.unsplash.com/photo-1584278860047-22db9ff82bed?w=600&q=80",badge:"new"},
   {id:14,name:"Egg Curry",price:80,img:"https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=600&q=80",badge:"popular"},
   {id:15,name:"Egg Paratha",price:70,img:"https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=600&q=80",badge:"new"},
-  {id:16,name:"Egg Maggi",price:70,img:"https://images.unsplash.com/photo-1569050467447-ce54b3bbc37d?w=600&q=80",badge:"popular"},
-  {id:17,name:"Egg Rice",price:80,img:"https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=600&q=80",badge:"popular"},
+  
+  
   {id:20,name:"Double Egg Omlet",price:80,img:"https://images.unsplash.com/photo-1541963463532-d68292c34b19?w=600&q=80",badge:"popular"}
 ];
 
@@ -1458,16 +1397,17 @@ function renderMenu(){
     if(item.badge==='spicy')badges='<span class="badge spicy">🌶 Spicy</span>';
     else if(item.badge==='popular')badges='<span class="badge popular">⭐ Popular</span>';
     else if(item.badge==='new')badges='<span class="badge new">✨ New</span>';
+    
+    // Note: Removed card-back HTML since flip is disabled
     return `
     <div class="card-wrapper" data-index="${index}" data-id="${item.id}">
       <div class="menu-card" id="card-${item.id}">
-        <!-- FRONT -->
+        <!-- FRONT ONLY -->
         <div class="card-front">
           <div class="card-front-img">
             <img src="${item.img}" alt="${item.name}" loading="lazy"
               onerror="this.src='https://images.unsplash.com/photo-1482049016688-2d3e1b311543?w=600&q=80'">
           </div>
-          <div class="flip-hint" title="Tap to see add-on">↻</div>
           <div class="card-front-content">
             <div class="badge-row">${badges}</div>
             <h3 class="card-name">${item.name}</h3>
@@ -1475,26 +1415,6 @@ function renderMenu(){
             <button class="card-add-btn" id="btn-${item.id}"
               onclick="event.stopPropagation(); addToCart(${item.id}, this)">
               <span>${t.add_to_cart}</span>
-            </button>
-          </div>
-        </div>
-        <!-- BACK -->
-        <div class="card-back">
-          <div class="chhas-img-wrap">
-            <img src="${chhasImg}" alt="Masala Chhas"
-              onerror="this.src='data:image/svg+xml,<svg xmlns=\\'http://www.w3.org/2000/svg\\'><rect width=\\'100\\' height=\\'100\\' fill=\\'%23C9A227\\'/></svg>'">
-          </div>
-          <h4 class="chhas-title">Masala Chhas</h4>
-          <p class="chhas-sub">Perfect side drink 🥛</p>
-          <p class="chhas-price">Just ₹10</p>
-          <div class="chhas-btns">
-            <button class="btn-add-chhas"
-              onclick="event.stopPropagation(); addChhasFromCard(${item.id})">
-              ✅ Add Chhas + ₹10
-            </button>
-            <button class="btn-no-thanks"
-              onclick="event.stopPropagation(); flipBack(${item.id})">
-              No Thanks
             </button>
           </div>
         </div>
@@ -1514,14 +1434,9 @@ function renderMenu(){
   },{threshold:0.1});
   document.querySelectorAll('.card-wrapper').forEach(cw=>observer.observe(cw));
 
-  // Card click to flip (tap on image area)
+  // Hover effects
   document.querySelectorAll('.card-wrapper').forEach(cw=>{
-    cw.addEventListener('click',function(e){
-      if(e.target.closest('.card-add-btn')||e.target.closest('.btn-add-chhas')||e.target.closest('.btn-no-thanks'))return;
-      const id=parseInt(this.dataset.id);
-      const card=document.getElementById('card-'+id);
-      card.classList.toggle('flipped');
-    });
+    // Click to flip logic removed
     cw.addEventListener('mouseenter',()=>cursor.classList.add('hover'));
     cw.addEventListener('mouseleave',()=>cursor.classList.remove('hover'));
   });
@@ -1543,30 +1458,13 @@ function addToCart(id,btn){
   span.textContent=t.added;
   btn.classList.add('added');
 
-  // Flip card after add
+  // Flip logic removed
   setTimeout(()=>{
-    document.getElementById('card-'+id).classList.add('flipped');
     span.textContent=t.add_to_cart;
     btn.classList.remove('added');
   },600);
 
-  // Auto flip back after 4s
-  setTimeout(()=>{
-    const card=document.getElementById('card-'+id);
-    if(card)card.classList.remove('flipped');
-  },4600);
-
   updateUI();
-}
-
-function addChhasFromCard(itemId){
-  flipBack(itemId);
-  addChhas();
-}
-
-function flipBack(itemId){
-  const card=document.getElementById('card-'+itemId);
-  if(card)card.classList.remove('flipped');
 }
 
 function addChhas(){
@@ -1706,10 +1604,15 @@ function openApp(appType){
   const amt=document.getElementById('total-price').textContent.replace('₹','');
   const pa=UPI_ID;const pn=encodeURIComponent(MERCHANT_NAME);
   let url='';
-  if(appType==='gpay')url=`gpay://upi/pay?pa=${pa}&pn=${pn}&am=${amt}&cu=INR`;
-  else if(appType==='phonepe')url=`phonepe://pay?pa=${pa}&pn=${pn}&am=${amt}&cu=INR`;
-  else if(appType==='paytm')url=`paytmmp://pay?pa=${pa}&pn=${pn}&am=${amt}&cu=INR`;
+  
+  // Using standard UPI intent links for auto-open
+  if(appType==='gpay') url=`gpay://upi/pay?pa=${pa}&pn=${pn}&am=${amt}&cu=INR`;
+  else if(appType==='phonepe') url=`phonepe://pay?pa=${pa}&pn=${pn}&am=${amt}&cu=INR`;
+  else if(appType==='paytm') url=`paytmmp://pay?pa=${pa}&pn=${pn}&am=${amt}&cu=INR`;
+  
+  // Fallback to default UPI for other cases
   else url=`upi://pay?pa=${pa}&pn=${pn}&am=${amt}&cu=INR`;
+  
   window.location.href=url;
 }
 
@@ -1733,7 +1636,7 @@ async function submitOrder(method){
 🕐 *Time:* ${dateStr}
 ━━━━━━━━━━━━━━━━━
 📋 *ORDER ITEMS:*
-${orderItems}
+ ${orderItems}
 ━━━━━━━━━━━━━━━━━
 💰 *Total:* ${totalPrice}
 💳 *Payment:* ${method}
