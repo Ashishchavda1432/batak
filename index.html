@@ -6,874 +6,290 @@
   <meta name="theme-color" content="#0a0a0a" />
   <title>Egg Master | The Royal Taste</title>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <!-- Preconnect for performance -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Outfit:wght@300;400;500;600&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
 
+  <!-- Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
 <style>
+/* ===== ROOT VARIABLES ===== */
 :root {
-  --gold: #C9A227;
-  --gold-light: #E8D48B;
-  --gold-dark: #8B6914;
-  --neon: #FFD700;
-  --bg-dark: #0a0a0a;
-  --bg-card: #111111;
-  --text-primary: #f5f5f5;
-  --text-muted: #888888;
+  --gold: #C9A227; --gold-light: #E8D48B; --gold-dark: #8B6914;
+  --neon-green: #39ff14; --neon-red: #ff3131;
+  --bg-dark: #0a0a0a; --bg-card: #111111;
+  --text-primary: #f5f5f5; --text-muted: #888888;
   --gradient-gold: linear-gradient(135deg,#8B6914 0%,#C9A227 30%,#E8D48B 50%,#C9A227 70%,#8B6914 100%);
-  --glow: 0 0 20px rgba(201,162,39,0.5), 0 0 40px rgba(201,162,39,0.2);
-  --glow-strong: 0 0 30px rgba(201,162,39,0.8), 0 0 60px rgba(201,162,39,0.4), 0 0 100px rgba(201,162,39,0.2);
+  --glow: 0 0 20px rgba(201,162,39,0.5);
+  --glow-strong: 0 0 30px rgba(201,162,39,0.8);
 }
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html{scroll-behavior:smooth}
-body{font-family:'Outfit',sans-serif;background:var(--bg-dark);color:var(--text-primary);overflow-x:hidden;user-select:none;-webkit-user-select:none}
-img{pointer-events:none}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html { scroll-behavior: smooth; }
+body { font-family: 'Outfit', sans-serif; background: var(--bg-dark); color: var(--text-primary); overflow-x: hidden; user-select: none; -webkit-user-select: none; }
+img { pointer-events: none; max-width: 100%; }
 
-/* ========= SPLASH SCREEN ========= */
+/* ===== ANTI-HACK / SECURITY ===== */
+/* DevTools detection via debugger or blocking keys handled in JS, CSS helps cursor */
+
+/* ===== SPLASH SCREEN ===== */
 #splash {
-  position:fixed;inset:0;background:#050505;z-index:999999;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  overflow:hidden;transition:opacity 0.8s ease, visibility 0.8s;
+  position: fixed; inset: 0; background: #050505; z-index: 999999;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  overflow: hidden; transition: opacity 0.8s ease, visibility 0.8s;
 }
-#splash.hidden{opacity:0;visibility:hidden;pointer-events:none}
-.splash-bg {
-  position:absolute;inset:0;
-  background: radial-gradient(ellipse at center, #1a1100 0%, #050505 70%);
-}
-.hex-grid {
-  position:absolute;inset:0;opacity:0.08;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='100'%3E%3Cpath d='M28 66L0 50V16L28 0l28 16v34zM0 50l28 16 28-16' fill='none' stroke='%23C9A227' stroke-width='0.5'/%3E%3C/svg%3E");
-}
-.circuit-lines {
-  position:absolute;inset:0;opacity:0.05;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cpath d='M0 100 H200 M100 0 V200 M50 50 H150 M50 150 H150 M50 50 V150 M150 50 V150' stroke='%23C9A227' stroke-width='0.5' fill='none'/%3E%3Ccircle cx='50' cy='50' r='3' fill='%23C9A227'/%3E%3Ccircle cx='150' cy='50' r='3' fill='%23C9A227'/%3E%3Ccircle cx='50' cy='150' r='3' fill='%23C9A227'/%3E%3Ccircle cx='150' cy='150' r='3' fill='%23C9A227'/%3E%3Ccircle cx='100' cy='100' r='3' fill='%23C9A227'/%3E%3C/svg%3E");
-}
-.splash-particles {
-  position:absolute;inset:0;overflow:hidden;pointer-events:none;
-}
-.splash-logo-wrap {
-  position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:30px;
-}
-.logo-ring-outer {
-  width:200px;height:200px;position:relative;
-  animation: logoSpin 8s linear infinite;
-}
-.logo-ring-outer svg { width:100%;height:100%; }
-.logo-center {
-  position:absolute;top:50%;left:50%;
-  transform:translate(-50%,-50%);
-  display:flex;flex-direction:column;align-items:center;
-  animation: logoPulse 2s ease-in-out infinite;
-}
-@keyframes logoSpin {0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
-@keyframes logoPulse {
-  0%,100%{filter:drop-shadow(0 0 10px rgba(201,162,39,0.6))}
-  50%{filter:drop-shadow(0 0 25px rgba(201,162,39,1))}
-}
-.splash-brand {
-  text-align:center;
-  animation: fadeUpSplash 1s ease 0.5s both;
-}
-@keyframes fadeUpSplash {
-  from{opacity:0;transform:translateY(30px)}
-  to{opacity:1;transform:translateY(0)}
-}
-.splash-name {
-  font-family:'Cormorant Garamond',serif;
-  font-size: clamp(2.5rem,10vw,5rem);
-  font-weight:600;
-  letter-spacing:0.2em;
-  background: var(--gradient-gold);
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
-  background-clip:text;
-  line-height:1;
-}
-.splash-tagline {
-  font-family:'Rajdhani',sans-serif;
-  font-size:0.85rem;
-  letter-spacing:0.5em;
-  color:var(--gold);
-  text-transform:uppercase;
-  margin-top:8px;
-  opacity:0.8;
-}
-.splash-divider {
-  width:120px;height:1px;
-  background:var(--gradient-gold);
-  margin:10px auto;
-  box-shadow: var(--glow);
-}
-.enter-btn {
-  font-family:'Rajdhani',sans-serif;
-  font-size:1rem;
-  font-weight:600;
-  letter-spacing:0.3em;
-  text-transform:uppercase;
-  background:transparent;
-  border:1px solid var(--gold);
-  color:var(--gold);
-  padding:14px 50px;
-  border-radius:50px;
-  cursor:pointer;
-  position:relative;
-  overflow:hidden;
-  transition:all 0.4s;
-  animation: fadeUpSplash 1s ease 1s both;
-}
-.enter-btn::before {
-  content:'';position:absolute;inset:0;
-  background:var(--gradient-gold);opacity:0;
-  transition:opacity 0.4s;
-}
-.enter-btn:hover::before{opacity:1}
-.enter-btn:hover{color:#000;box-shadow:var(--glow-strong)}
-.enter-btn span{position:relative;z-index:1}
-.splash-bottom-text {
-  font-size:0.65rem;letter-spacing:0.3em;
-  color:rgba(201,162,39,0.4);text-transform:uppercase;
-  animation: fadeUpSplash 1s ease 1.3s both;
-}
+#splash.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+.splash-bg { position: absolute; inset: 0; background: radial-gradient(ellipse at center, #1a1100 0%, #050505 70%); }
+.hex-grid { position: absolute; inset: 0; opacity: 0.08; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='100'%3E%3Cpath d='M28 66L0 50V16L28 0l28 16v34zM0 50l28 16 28-16' fill='none' stroke='%23C9A227' stroke-width='0.5'/%3E%3C/svg%3E"); }
+.splash-logo-wrap { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 30px; width: 100%; }
 
-/* ========= SCROLL PROGRESS ========= */
-.scroll-progress {
-  position:fixed;top:0;left:0;width:0%;height:2px;
-  background:var(--gradient-gold);z-index:99999;
-  transition:width 0.1s ease-out;
-  box-shadow:var(--glow);
-}
+/* Logo Animation */
+.logo-ring-outer { width: 200px; height: 200px; position: relative; animation: logoSpin 8s linear infinite; }
+.logo-ring-outer svg { width: 100%; height: 100%; }
+.logo-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; animation: logoPulse 2s ease-in-out infinite; }
+@keyframes logoSpin { 0% { transform: rotate(0deg) } 100% { transform: rotate(360deg) } }
+@keyframes logoPulse { 0%, 100% { filter: drop-shadow(0 0 10px rgba(201,162,39,0.6)) } 50% { filter: drop-shadow(0 0 25px rgba(201,162,39,1)) } }
 
-/* ========= PRELOADER ========= */
-#preloader {
-  position:fixed;inset:0;background:var(--bg-dark);z-index:99998;
-  display:flex;align-items:center;justify-content:center;flex-direction:column;
-  transition:opacity 0.8s cubic-bezier(0.65,0,0.35,1),visibility 0.8s;
-}
-#preloader.hidden{opacity:0;visibility:hidden;pointer-events:none}
-.loader-text {
-  font-family:'Cormorant Garamond',serif;
-  font-size:clamp(2rem,8vw,4rem);
-  font-weight:300;letter-spacing:0.3em;color:var(--gold);overflow:hidden;
-}
-.loader-text span {
-  display:inline-block;
-  animation:slideUp 0.6s cubic-bezier(0.65,0,0.35,1) forwards;
-  opacity:0;transform:translateY(100%);
-}
-@keyframes slideUp{to{opacity:1;transform:translateY(0)}}
-.loader-line {
-  width:0;height:1px;background:var(--gradient-gold);margin-top:20px;
-  animation:expandLine 1.5s cubic-bezier(0.65,0,0.35,1) forwards;
-  box-shadow:var(--glow);
-}
-@keyframes expandLine{to{width:200px}}
+/* Splash Brand */
+.splash-brand { text-align: center; animation: fadeUpSplash 1s ease 0.5s both; }
+@keyframes fadeUpSplash { from { opacity: 0; transform: translateY(30px) } to { opacity: 1; transform: translateY(0) } }
+.splash-name { font-family: 'Cormorant Garamond', serif; font-size: clamp(2.5rem, 10vw, 5rem); font-weight: 600; letter-spacing: 0.2em; background: var(--gradient-gold); -webkit-background-clip: text; -webkit-text-fill-color: transparent; line-height: 1; }
+.splash-tagline { font-family: 'Rajdhani', sans-serif; font-size: 0.85rem; letter-spacing: 0.5em; color: var(--gold); text-transform: uppercase; margin-top: 8px; opacity: 0.8; }
+.splash-divider { width: 120px; height: 1px; background: var(--gradient-gold); margin: 10px auto; box-shadow: var(--glow); }
 
-/* ========= EFFECTS ========= */
-.noise-overlay {
-  position:fixed;inset:0;pointer-events:none;z-index:99997;opacity:0.03;
-  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+/* Typing Effect Styles */
+.typing-container {
+  min-height: 60px; display: flex; align-items: center; justify-content: center;
+  opacity: 0; animation: fadeUpSplash 1s ease 1s forwards; 
 }
-#bg-canvas {
-  position:fixed;inset:0;z-index:1;opacity:0.4;pointer-events:none;
+.typing-text {
+  font-family: sans-serif; /* For Hindi Support */
+  font-size: 1.4rem; font-weight: 600; color: var(--gold-light);
+  border-right: 3px solid var(--gold); padding-right: 5px;
+  animation: blink 0.7s infinite; white-space: nowrap;
 }
-#particle-canvas {
-  position:fixed;inset:0;z-index:2;pointer-events:none;opacity:0.6;
-}
-.cursor-follower {
-  position:fixed;width:20px;height:20px;border:1px solid var(--gold);
-  border-radius:50%;pointer-events:none;z-index:99997;
-  transition:transform 0.15s ease-out,width 0.2s,height 0.2s,border-width 0.2s;
-  transform:translate(-50%,-50%);mix-blend-mode:difference;
-}
-.cursor-follower.hover{width:50px;height:50px;border-width:2px}
-@media(max-width:768px){.cursor-follower{display:none}}
+@keyframes blink { 0%, 100% { border-color: var(--gold) } 50% { border-color: transparent } }
 
-/* ========= NAVIGATION ========= */
-nav {
-  position:fixed;top:0;left:0;right:0;height:70px;
-  display:flex;align-items:center;justify-content:space-between;
-  padding:0 30px;z-index:10000;
-  transition:all 0.4s cubic-bezier(0.65,0,0.35,1);
-}
-nav.scrolled {
-  background:rgba(10,10,10,0.92);backdrop-filter:blur(20px);
-  -webkit-backdrop-filter:blur(20px);
-  border-bottom:1px solid rgba(201,162,39,0.15);
-  box-shadow:0 4px 30px rgba(0,0,0,0.5);
-}
-.nav-logo {
-  display:flex;align-items:center;gap:12px;text-decoration:none;position:relative;
-}
-.nav-logo-icon-wrap {
-  width:44px;height:44px;background:rgba(201,162,39,0.1);
-  border:1px solid rgba(201,162,39,0.3);border-radius:10px;
-  display:flex;align-items:center;justify-content:center;
-  transition:all 0.3s;
-}
-.nav-logo:hover .nav-logo-icon-wrap {
-  background:rgba(201,162,39,0.2);box-shadow:var(--glow);
-}
-.nav-logo-icon{font-size:1.5rem;filter:grayscale(30%)}
-.nav-logo-text {
-  font-family:'Cormorant Garamond',serif;font-size:1.4rem;
-  font-weight:600;letter-spacing:0.15em;color:var(--text-primary);
-}
-.nav-logo-sub {
-  font-size:0.6rem;letter-spacing:0.3em;color:var(--gold);
-  text-transform:uppercase;position:absolute;bottom:-8px;left:0;white-space:nowrap;
-}
-.nav-right{display:flex;align-items:center;gap:15px}
+.splash-bottom-text { font-size: 0.65rem; letter-spacing: 0.3em; color: rgba(201,162,39,0.4); text-transform: uppercase; animation: fadeUpSplash 1s ease 1.5s both; }
 
-/* Language Switcher */
-.lang-switcher{position:relative}
-.lang-btn {
-  background:transparent;border:1px solid rgba(201,162,39,0.3);
-  color:var(--text-primary);padding:8px 16px;border-radius:30px;cursor:pointer;
-  font-family:'Outfit',sans-serif;font-size:0.75rem;letter-spacing:0.1em;
-  transition:all 0.3s;display:flex;align-items:center;gap:6px;
-}
-.lang-btn:hover{border-color:var(--gold);color:var(--gold);box-shadow:var(--glow)}
-.lang-dropdown {
-  position:absolute;top:50px;right:0;background:rgba(12,12,12,0.98);
-  border:1px solid rgba(201,162,39,0.2);border-radius:8px;overflow:hidden;
-  min-width:140px;opacity:0;visibility:hidden;transform:translateY(-10px);
-  transition:all 0.3s cubic-bezier(0.65,0,0.35,1);backdrop-filter:blur(10px);
-}
-.lang-dropdown.active{opacity:1;visibility:visible;transform:translateY(0)}
-.lang-option {
-  padding:12px 18px;color:var(--text-muted);cursor:pointer;
-  transition:all 0.2s;font-size:0.85rem;
-}
-.lang-option:hover{background:rgba(201,162,39,0.1);color:var(--text-primary)}
-.lang-option.selected{color:var(--gold);background:rgba(201,162,39,0.05)}
+/* ===== PRELOADER ===== */
+#preloader { position: fixed; inset: 0; background: var(--bg-dark); z-index: 99998; display: none; align-items: center; justify-content: center; flex-direction: column; transition: opacity 0.8s, visibility 0.8s; }
+#preloader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+.loader-text { font-family: 'Cormorant Garamond', serif; font-size: clamp(2rem, 8vw, 4rem); font-weight: 300; letter-spacing: 0.3em; color: var(--gold); overflow: hidden; }
+.loader-text span { display: inline-block; animation: slideUp 0.6s cubic-bezier(0.65,0,0.35,1) forwards; opacity: 0; transform: translateY(100%); }
+@keyframes slideUp { to { opacity: 1; transform: translateY(0) } }
+.loader-line { width: 0; height: 1px; background: var(--gradient-gold); margin-top: 20px; animation: expandLine 1.5s forwards; box-shadow: var(--glow); }
+@keyframes expandLine { to { width: 200px } }
 
-/* Cart Nav Button */
-.cart-nav-btn {
-  position:relative;background:transparent;
-  border:1px solid rgba(201,162,39,0.3);color:var(--text-primary);
-  width:46px;height:46px;border-radius:50%;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;font-size:1.2rem;
-  transition:all 0.3s cubic-bezier(0.65,0,0.35,1);overflow:hidden;
-}
-.cart-nav-btn:hover{border-color:var(--gold);transform:scale(1.05);box-shadow:var(--glow)}
-.cart-nav-btn.active{animation:cartPulse 2s infinite}
-@keyframes cartPulse{
-  0%,100%{box-shadow:0 0 0 0 rgba(201,162,39,0.4)}
-  50%{box-shadow:0 0 0 10px rgba(201,162,39,0)}
-}
-.cart-badge {
-  position:absolute;top:-2px;right:-2px;background:#C9A227;color:#000;
-  width:18px;height:18px;border-radius:50%;font-size:0.65rem;
-  font-weight:600;display:flex;align-items:center;justify-content:center;
-}
+/* ===== MAIN CONTENT (Hidden Initially) ===== */
+#main-content { opacity: 0; visibility: hidden; transition: opacity 0.5s ease; }
+#main-content.visible { opacity: 1; visibility: visible; }
 
-/* ========= HERO ========= */
-.hero {
-  min-height:100vh;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;text-align:center;
-  padding:120px 20px 80px;position:relative;z-index:10;
-}
-.hero-eyebrow {
-  font-family:'Rajdhani',sans-serif;font-size:0.8rem;letter-spacing:0.5em;
-  color:var(--gold);text-transform:uppercase;margin-bottom:25px;
-  opacity:0;transform:translateY(30px);
-  animation:fadeUp 1s cubic-bezier(0.65,0,0.35,1) 0.3s forwards;
-  display:flex;align-items:center;gap:15px;
-}
-.hero-eyebrow::before,.hero-eyebrow::after {
-  content:'';width:40px;height:1px;background:var(--gradient-gold);
-}
-.hero-title {
-  font-family:'Cormorant Garamond',serif;
-  font-size:clamp(2.8rem,10vw,7rem);font-weight:300;line-height:1.05;margin-bottom:30px;
-}
-.hero-title .line{display:block;overflow:hidden}
-.hero-title .line span {
-  display:block;transform:translateY(100%);
-  animation:revealLine 1.2s cubic-bezier(0.65,0,0.35,1) forwards;
-}
-.hero-title .line:nth-child(1) span{animation-delay:0.4s}
-.hero-title .line:nth-child(2) span{animation-delay:0.55s}
-@keyframes revealLine{to{transform:translateY(0)}}
-.hero-title em {
-  font-style:italic;background:var(--gradient-gold);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-}
-.hero-divider {
-  width:80px;height:1px;background:var(--gold);margin:0 auto 30px;
-  opacity:0;transform:scaleX(0);
-  animation:scaleIn 1s cubic-bezier(0.65,0,0.35,1) 0.7s forwards;
-  box-shadow:var(--glow);
-}
-@keyframes scaleIn{to{opacity:1;transform:scaleX(1)}}
-.hero-timing {
-  display:flex;align-items:center;gap:10px;font-size:0.9rem;color:var(--text-muted);
-  opacity:0;animation:fadeUp 1s cubic-bezier(0.65,0,0.35,1) 0.9s forwards;
-  font-family:'Rajdhani',sans-serif;letter-spacing:0.05em;
-}
-.timing-dot {
-  width:8px;height:8px;background:#4ade80;border-radius:50%;
-  animation:blink 2s infinite;box-shadow:0 0 10px #4ade80;
-}
-@keyframes blink{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(0.8)}}
-@keyframes fadeUp{to{opacity:1;transform:translateY(0)}}
-.hero-scroll {
-  position:absolute;bottom:40px;left:50%;transform:translateX(-50%);
-  display:flex;flex-direction:column;align-items:center;gap:8px;
-  opacity:0;animation:fadeUp 1s cubic-bezier(0.65,0,0.35,1) 1.2s forwards;
-}
-.scroll-text{font-size:0.65rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--text-muted)}
-.scroll-line {
-  width:1px;height:40px;background:linear-gradient(to bottom,var(--gold),transparent);
-  animation:scrollBounce 1.5s infinite;
-}
-@keyframes scrollBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(10px)}}
+/* ===== NAVBAR ===== */
+nav { position: fixed; top: 0; left: 0; right: 0; height: 70px; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; z-index: 10000; transition: all 0.4s; }
+nav.scrolled { background: rgba(10,10,10,0.92); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(201,162,39,0.15); box-shadow: 0 4px 30px rgba(0,0,0,0.5); }
+.nav-logo { display: flex; align-items: center; gap: 12px; text-decoration: none; position: relative; }
+.nav-logo-icon-wrap { width: 44px; height: 44px; background: rgba(201,162,39,0.1); border: 1px solid rgba(201,162,39,0.3); border-radius: 10px; display: flex; align-items: center; justify-content: center; transition: all 0.3s; }
+.nav-logo:hover .nav-logo-icon-wrap { background: rgba(201,162,39,0.2); box-shadow: var(--glow); }
+.nav-logo-text { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 600; letter-spacing: 0.15em; color: var(--text-primary); }
+.nav-logo-sub { font-size: 0.6rem; letter-spacing: 0.3em; color: var(--gold); text-transform: uppercase; position: absolute; bottom: -8px; left: 0; white-space: nowrap; }
+.nav-right { display: flex; align-items: center; gap: 15px; }
 
-/* ========= MENU SECTION ========= */
-.menu-section{position:relative;z-index:10;padding:80px 20px 160px}
-.section-header{text-align:center;margin-bottom:60px}
-.section-label {
-  font-family:'Rajdhani',sans-serif;font-size:0.75rem;letter-spacing:0.5em;
-  text-transform:uppercase;color:var(--gold);margin-bottom:15px;
-}
-.section-title {
-  font-family:'Cormorant Garamond',serif;
-  font-size:clamp(2rem,5vw,3.5rem);font-weight:300;
-}
-.section-title em {
-  font-style:italic;background:var(--gradient-gold);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-}
+/* Language & Cart Buttons */
+.lang-btn { background: transparent; border: 1px solid rgba(201,162,39,0.3); color: var(--text-primary); padding: 8px 16px; border-radius: 30px; cursor: pointer; font-size: 0.75rem; letter-spacing: 0.1em; transition: all 0.3s; display: flex; align-items: center; gap: 6px; }
+.lang-btn:hover { border-color: var(--gold); color: var(--gold); box-shadow: var(--glow); }
+.lang-dropdown { position: absolute; top: 50px; right: 0; background: rgba(12,12,12,0.98); border: 1px solid rgba(201,162,39,0.2); border-radius: 8px; overflow: hidden; min-width: 140px; opacity: 0; visibility: hidden; transform: translateY(-10px); transition: all 0.3s; backdrop-filter: blur(10px); }
+.lang-dropdown.active { opacity: 1; visibility: visible; transform: translateY(0); }
+.lang-option { padding: 12px 18px; color: var(--text-muted); cursor: pointer; transition: all 0.2s; font-size: 0.85rem; }
+.lang-option:hover { background: rgba(201,162,39,0.1); color: var(--text-primary); }
+.lang-option.selected { color: var(--gold); background: rgba(201,162,39,0.05); }
+.cart-nav-btn { position: relative; background: transparent; border: 1px solid rgba(201,162,39,0.3); color: var(--text-primary); width: 46px; height: 46px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; transition: all 0.3s; overflow: hidden; }
+.cart-nav-btn:hover { border-color: var(--gold); transform: scale(1.05); box-shadow: var(--glow); }
+.cart-badge { position: absolute; top: -2px; right: -2px; background: #C9A227; color: #000; width: 18px; height: 18px; border-radius: 50%; font-size: 0.65rem; font-weight: 600; display: flex; align-items: center; justify-content: center; }
 
-/* Menu Grid */
-.menu-grid {
-  display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
-  gap:30px;max-width:1400px;margin:0 auto;
-}
-@media(max-width:600px){.menu-grid{grid-template-columns:repeat(2,1fr);gap:14px}}
+/* ===== HERO ===== */
+.hero { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 120px 20px 80px; position: relative; z-index: 10; }
+.hero-eyebrow { font-family: 'Rajdhani', sans-serif; font-size: 0.8rem; letter-spacing: 0.5em; color: var(--gold); text-transform: uppercase; margin-bottom: 25px; opacity: 0; transform: translateY(30px); animation: fadeUp 1s 0.3s forwards; display: flex; align-items: center; gap: 15px; }
+.hero-eyebrow::before, .hero-eyebrow::after { content: ''; width: 40px; height: 1px; background: var(--gradient-gold); }
+.hero-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(2.8rem, 10vw, 7rem); font-weight: 300; line-height: 1.05; margin-bottom: 30px; }
+.hero-title .line { display: block; overflow: hidden }
+.hero-title .line span { display: block; transform: translateY(100%); animation: revealLine 1.2s forwards; }
+.hero-title .line:nth-child(1) span { animation-delay: 0.4s }
+.hero-title .line:nth-child(2) span { animation-delay: 0.55s }
+@keyframes revealLine { to { transform: translateY(0) } }
+.hero-title em { font-style: italic; background: var(--gradient-gold); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.hero-divider { width: 80px; height: 1px; background: var(--gold); margin: 0 auto 30px; opacity: 0; transform: scaleX(0); animation: scaleIn 1s 0.7s forwards; box-shadow: var(--glow); }
+@keyframes scaleIn { to { opacity: 1; transform: scaleX(1) } }
 
-/* ========= CARD FLIP DESIGN ========= */
-.card-wrapper {
-  perspective:1200px;height:400px;
-  opacity:0;transform:translateY(60px);
-  transition:opacity 0.6s ease, transform 0.6s ease;
+/* Neon Timing Display */
+.hero-timing { display: flex; flex-direction: column; align-items: center; gap: 12px; opacity: 0; animation: fadeUp 1s 0.9s forwards; }
+.timing-status {
+  font-family: 'Rajdhani', sans-serif; font-size: 1.8rem; font-weight: 700;
+  letter-spacing: 0.3em; text-transform: uppercase;
+  transition: all 0.5s;
 }
-.card-wrapper.visible{opacity:1;transform:translateY(0)}
-@media(max-width:600px){.card-wrapper{height:320px}}
-.menu-card {
-  width:100%;height:100%;position:relative;
-  transform-style:preserve-3d;
-  transition:transform 0.75s cubic-bezier(0.4,0.2,0.2,1);
-  cursor:pointer;
-}
-/* FLIP DISABLED */
-/* .menu-card.flipped{transform:rotateY(180deg)} */
+.timing-status.open { color: var(--neon-green); animation: neonFlicker 2s infinite alternate; }
+.timing-status.closed { color: var(--neon-red); }
+.timing-hours { font-size: 0.85rem; color: var(--text-muted); letter-spacing: 0.1em; }
+@keyframes neonFlicker { 0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { text-shadow: 0 0 5px currentColor, 0 0 10px currentColor, 0 0 20px currentColor, 0 0 40px currentColor, 0 0 80px currentColor; } 20%, 24%, 55% { text-shadow: none; } }
 
-/* Card Front */
-.card-front {
-  position:absolute;width:100%;height:100%;
-  backface-visibility:hidden;-webkit-backface-visibility:hidden;
-  border-radius:16px;overflow:hidden;
-  background:var(--bg-card);
-  border:1px solid rgba(201,162,39,0.1);
-  transition:border-color 0.3s,box-shadow 0.3s;
-}
-.card-wrapper:hover .card-front:not(.menu-card.flipped .card-front) {
-  border-color:rgba(201,162,39,0.3);
-  box-shadow:0 20px 60px rgba(0,0,0,0.4),var(--glow);
-}
-.card-front::before {
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(180deg,transparent 30%,rgba(10,10,10,0.85) 70%,rgba(10,10,10,0.97) 100%);
-  z-index:2;
-}
-.card-front-img {
-  position:absolute;inset:0;z-index:1;
-}
-.card-front-img img {
-  width:100%;height:100%;object-fit:cover;
-  transition:transform 0.8s cubic-bezier(0.65,0,0.35,1);
-  filter:brightness(0.9);
-}
-.card-wrapper:hover .card-front-img img{transform:scale(1.08);filter:brightness(1)}
-.card-front-content {
-  position:absolute;bottom:0;left:0;right:0;padding:22px;z-index:3;
-  transform:translateY(10px);transition:transform 0.4s cubic-bezier(0.65,0,0.35,1);
-}
-.card-wrapper:hover .card-front-content{transform:translateY(0)}
-.badge-row {
-  display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap;
-}
-.badge {
-  font-family:'Rajdhani',sans-serif;font-size:0.65rem;letter-spacing:0.15em;
-  text-transform:uppercase;padding:3px 10px;border-radius:20px;
-}
-.badge.spicy{background:rgba(255,80,50,0.15);border:1px solid rgba(255,80,50,0.3);color:#ff5032}
-.badge.popular{background:rgba(201,162,39,0.15);border:1px solid rgba(201,162,39,0.3);color:var(--gold)}
-.badge.new{background:rgba(74,222,128,0.15);border:1px solid rgba(74,222,128,0.3);color:#4ade80}
-.card-name {
-  font-family:'Cormorant Garamond',serif;font-size:1.35rem;
-  font-weight:600;margin-bottom:4px;letter-spacing:0.02em;
-}
-.card-price{font-size:1rem;color:var(--gold);font-weight:500;margin-bottom:14px;font-family:'Rajdhani',sans-serif;letter-spacing:0.05em}
-.card-add-btn {
-  background:transparent;border:1px solid var(--gold);color:var(--gold);
-  padding:9px 22px;font-family:'Rajdhani',sans-serif;font-size:0.8rem;
-  letter-spacing:0.15em;text-transform:uppercase;cursor:pointer;
-  border-radius:30px;transition:all 0.3s;
-  opacity:0;transform:translateY(10px);position:relative;overflow:hidden;
-}
-.card-add-btn::before {
-  content:'';position:absolute;inset:0;
-  background:var(--gradient-gold);opacity:0;transition:opacity 0.3s;
-}
-.card-wrapper:hover .card-add-btn{opacity:1;transform:translateY(0);transition-delay:0.1s}
-.card-add-btn:hover::before{opacity:1}
-.card-add-btn:hover{color:#000;box-shadow:var(--glow)}
-.card-add-btn:hover span{position:relative;z-index:1;color:#000}
-.card-add-btn span{position:relative;z-index:1}
-.card-add-btn.added{background:#4ade80;border-color:#4ade80;color:#000}
-.card-add-btn.added::before{opacity:0}
+.hero-scroll { margin-top: 40px; display: flex; flex-direction: column; align-items: center; gap: 8px; opacity: 0; animation: fadeUp 1s 1.2s forwards; }
+.scroll-text { font-size: 0.65rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--text-muted); }
+.scroll-line { width: 1px; height: 40px; background: linear-gradient(to bottom, var(--gold), transparent); animation: scrollBounce 1.5s infinite; }
+@keyframes scrollBounce { 0%, 100% { transform: translateY(0) } 50% { transform: translateY(10px) } }
+@keyframes fadeUp { to { opacity: 1; transform: translateY(0) } }
 
-/* Premium Tag */
-.premium-tag {
-  text-align:center;padding:50px 20px 40px;position:relative;z-index:10;
-}
-.premium-tag p {
-  font-family:'Cormorant Garamond',serif;font-size:1.4rem;
-  font-style:italic;color:var(--gold);opacity:0.8;
-  display:flex;align-items:center;gap:15px;justify-content:center;
-}
-.premium-tag p::before,.premium-tag p::after{content:'❧';opacity:0.5}
+/* ===== MENU SECTION ===== */
+.menu-section { position: relative; z-index: 10; padding: 80px 20px 160px; }
+.section-header { text-align: center; margin-bottom: 60px; }
+.section-label { font-family: 'Rajdhani', sans-serif; font-size: 0.75rem; letter-spacing: 0.5em; text-transform: uppercase; color: var(--gold); margin-bottom: 15px; }
+.section-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 300; }
+.section-title em { font-style: italic; background: var(--gradient-gold); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.menu-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px; max-width: 1400px; margin: 0 auto; }
+@media(max-width: 600px) { .menu-grid { grid-template-columns: repeat(2, 1fr); gap: 14px } }
 
-/* ========= FLOATING CART BAR ========= */
-#floating-cart {
-  position:fixed;bottom:28px;left:50%;
-  transform:translateX(-50%) translateY(120px);
-  z-index:9999;
-  transition:transform 0.6s cubic-bezier(0.175,0.885,0.32,1.275);
-  pointer-events:none;
-}
-#floating-cart.visible{
-  transform:translateX(-50%) translateY(0);
-  pointer-events:all;
-}
-.floating-cart-inner {
-  position:relative;
-  background:#0a0a0a;
-  border-radius:60px;
-  padding:2px;
-  cursor:pointer;
-  overflow:visible;
-}
-.floating-cart-glow {
-  position:absolute;inset:-3px;border-radius:63px;
-  background:conic-gradient(from 0deg, #8B6914, #C9A227, #E8D48B, #C9A227, #8B6914, #8B6914);
-  animation:neonSpin 3s linear infinite;
-  filter:blur(1px);
-  z-index:-1;
-}
-@keyframes neonSpin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
-.floating-cart-body {
-  background:linear-gradient(135deg,#0d0d0d,#1a1500);
-  border-radius:58px;
-  padding:14px 28px;
-  display:flex;align-items:center;gap:14px;
-  border:1px solid rgba(201,162,39,0.2);
-  min-width:220px;justify-content:space-between;
-}
-.fc-icon{font-size:1.5rem;line-height:1}
-.fc-info{display:flex;flex-direction:column;line-height:1.2}
-.fc-label {
-  font-family:'Rajdhani',sans-serif;font-size:0.7rem;
-  letter-spacing:0.2em;color:var(--text-muted);text-transform:uppercase;
-}
-.fc-total {
-  font-family:'Cormorant Garamond',serif;font-size:1.1rem;
-  color:var(--gold-light);font-weight:600;
-}
-.fc-badge {
-  background:var(--gradient-gold);color:#000;
-  width:28px;height:28px;border-radius:50%;
-  font-weight:700;font-size:0.8rem;
-  display:flex;align-items:center;justify-content:center;
-  box-shadow:var(--glow);
-  animation:badgePop 0.3s ease;
-}
-@keyframes badgePop{
-  0%{transform:scale(0.5)}60%{transform:scale(1.2)}100%{transform:scale(1)}
-}
+/* ===== CARD DESIGN ===== */
+.card-wrapper { perspective: 1200px; height: 420px; opacity: 0; transform: translateY(60px); transition: opacity 0.6s ease, transform 0.6s ease; }
+.card-wrapper.visible { opacity: 1; transform: translateY(0) }
+@media(max-width: 600px) { .card-wrapper { height: 360px } }
+.menu-card { width: 100%; height: 100%; position: relative; transition: transform 0.5s; cursor: pointer; }
+.card-front { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 16px; overflow: hidden; background: var(--bg-card); border: 1px solid rgba(201,162,39,0.1); transition: all 0.3s; }
+.card-wrapper:hover .card-front { border-color: rgba(201,162,39,0.3); box-shadow: 0 20px 60px rgba(0,0,0,0.4), var(--glow); }
+.card-front::before { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 30%, rgba(10,10,10,0.85) 70%, rgba(10,10,10,0.97) 100%); z-index: 2; }
+.card-front-img { position: absolute; inset: 0; z-index: 1; }
+.card-front-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s; filter: brightness(0.9); }
+.card-wrapper:hover .card-front-img img { transform: scale(1.08); filter: brightness(1) }
+.card-front-content { position: absolute; bottom: 0; left: 0; right: 0; padding: 22px; z-index: 3; transform: translateY(10px); transition: transform 0.4s; }
+.card-wrapper:hover .card-front-content { transform: translateY(0) }
+.badge-row { display: flex; gap: 6px; margin-bottom: 8px; flex-wrap: wrap; }
+.badge { font-family: 'Rajdhani', sans-serif; font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; padding: 3px 10px; border-radius: 20px; }
+.badge.spicy { background: rgba(255,80,50,0.15); border: 1px solid rgba(255,80,50,0.3); color: #ff5032 }
+.badge.popular { background: rgba(201,162,39,0.15); border: 1px solid rgba(201,162,39,0.3); color: var(--gold) }
+.badge.new { background: rgba(74,222,128,0.15); border: 1px solid rgba(74,222,128,0.3); color: #4ade80 }
+.card-name { font-family: 'Cormorant Garamond', serif; font-size: 1.35rem; font-weight: 600; margin-bottom: 4px; }
+.card-price { font-size: 1rem; color: var(--gold); font-weight: 500; margin-bottom: 8px; font-family: 'Rajdhani', sans-serif; }
 
-/* ========= CART SLIDE ========= */
-#cart-slide {
-  position:fixed;top:0;right:-105%;width:100%;max-width:430px;
-  height:100%;background:var(--bg-dark);z-index:11000;
-  transition:right 0.5s cubic-bezier(0.65,0,0.35,1);
-  border-left:1px solid rgba(201,162,39,0.15);
-  display:flex;flex-direction:column;
-  box-shadow:-20px 0 60px rgba(0,0,0,0.5);
+/* Special Dish Info Style - UNIQUE */
+.card-dish-info {
+  font-size: 0.75rem;
+  color: rgba(232, 212, 139, 0.85); /* Light Gold */
+  margin-bottom: 12px;
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  line-height: 1.4;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.5);
 }
-#cart-slide.active{right:0}
-.cart-overlay {
-  position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:10999;
-  opacity:0;visibility:hidden;transition:all 0.4s;backdrop-filter:blur(5px);
-}
-.cart-overlay.active{opacity:1;visibility:visible}
-.cart-header {
-  padding:25px;border-bottom:1px solid rgba(201,162,39,0.1);
-  display:flex;justify-content:space-between;align-items:center;
-  background:linear-gradient(135deg,rgba(201,162,39,0.05),transparent);
-}
-.cart-title {
-  font-family:'Cormorant Garamond',serif;font-size:1.6rem;
-  font-weight:600;letter-spacing:0.05em;
-  display:flex;align-items:center;gap:10px;
-}
-.cart-close {
-  background:none;border:1px solid rgba(255,255,255,0.1);
-  color:var(--text-muted);font-size:1.2rem;cursor:pointer;
-  width:36px;height:36px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;transition:all 0.3s;
-}
-.cart-close:hover{border-color:var(--gold);color:var(--text-primary);box-shadow:var(--glow)}
-#cart-items-wrapper{flex:1;overflow-y:auto;padding:20px}
-#cart-items-wrapper::-webkit-scrollbar{width:3px}
-#cart-items-wrapper::-webkit-scrollbar-thumb{background:rgba(201,162,39,0.3)}
-.cart-empty {
-  display:flex;flex-direction:column;align-items:center;
-  justify-content:center;height:200px;color:var(--text-muted);gap:10px;
-}
-.cart-empty-icon{font-size:3rem;opacity:0.4}
-.cart-item {
-  display:flex;justify-content:space-between;align-items:center;
-  padding:14px 0;border-bottom:1px solid rgba(255,255,255,0.05);
-  animation:slideInRight 0.3s ease;
-}
-@keyframes slideInRight{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
-.cart-item-img {
-  width:50px;height:50px;border-radius:10px;object-fit:cover;
-  border:1px solid rgba(201,162,39,0.2);margin-right:12px;flex-shrink:0;
-}
-.cart-item-info h4 {
-  font-family:'Cormorant Garamond',serif;font-size:1.1rem;
-  font-weight:500;margin-bottom:3px;
-}
-.cart-item-info span{font-size:0.82rem;color:var(--text-muted)}
-.qty-controls{display:flex;align-items:center;gap:10px}
-.qty-btn {
-  width:28px;height:28px;border-radius:50%;
-  border:1px solid rgba(201,162,39,0.3);background:transparent;
-  color:var(--gold);cursor:pointer;font-size:1rem;
-  transition:all 0.2s;display:flex;align-items:center;justify-content:center;
-}
-.qty-btn:hover{background:var(--gold);color:#000;box-shadow:var(--glow)}
-.qty-num{font-weight:600;min-width:20px;text-align:center;font-family:'Rajdhani',sans-serif;font-size:1rem}
-.item-total{font-size:0.95rem;color:var(--gold);font-weight:600;margin-left:12px;font-family:'Rajdhani',sans-serif}
-/* Upsell */
-.cart-upsell {
-  margin-top:18px;padding:16px;border-radius:12px;
-  background:rgba(201,162,39,0.05);border:1px dashed rgba(201,162,39,0.25);
-  display:flex;align-items:center;gap:14px;
-  animation:slideInRight 0.4s ease;
-}
-.upsell-img {
-  width:55px;height:55px;border-radius:50%;object-fit:cover;
-  border:2px solid rgba(201,162,39,0.4);flex-shrink:0;
-  box-shadow:var(--glow);
-}
-.upsell-info{flex:1}
-.upsell-title{font-family:'Cormorant Garamond',serif;font-size:1rem;color:var(--gold)}
-.upsell-price{font-size:0.78rem;color:var(--text-muted);font-family:'Rajdhani',sans-serif}
-.upsell-btn {
-  background:transparent;border:1px solid var(--gold);color:var(--gold);
-  padding:8px 16px;border-radius:20px;font-size:0.75rem;
-  letter-spacing:0.1em;cursor:pointer;transition:all 0.3s;white-space:nowrap;
-  font-family:'Rajdhani',sans-serif;font-weight:600;
-}
-.upsell-btn:hover{background:var(--gold);color:#000;box-shadow:var(--glow)}
-.cart-footer {
-  padding:22px;border-top:1px solid rgba(201,162,39,0.1);
-  background:linear-gradient(0deg,rgba(201,162,39,0.03),transparent);
-}
-.cart-subtotals{margin-bottom:15px}
-.subtotal-row {
-  display:flex;justify-content:space-between;font-size:0.9rem;
-  color:var(--text-muted);margin-bottom:6px;
-}
-.cart-total {
-  display:flex;justify-content:space-between;font-size:1.2rem;
-  margin-bottom:18px;font-family:'Cormorant Garamond',serif;
-  padding-top:12px;border-top:1px solid rgba(201,162,39,0.15);
-}
-.cart-total span:last-child{color:var(--gold);font-weight:600}
-.checkout-btn {
-  width:100%;background:var(--gradient-gold);border:none;color:#000;
-  padding:15px;font-family:'Rajdhani',sans-serif;font-size:0.9rem;
-  font-weight:700;letter-spacing:0.2em;text-transform:uppercase;
-  border-radius:40px;cursor:pointer;transition:all 0.3s;
-  box-shadow:var(--glow);
-}
-.checkout-btn:hover{transform:scale(1.02);box-shadow:var(--glow-strong)}
+.card-wrapper:hover .card-dish-info { opacity: 1; }
 
-/* ========= ORDER MODAL ========= */
-.modal {
-  position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:15000;
-  display:none;align-items:center;justify-content:center;padding:20px;
-  backdrop-filter:blur(15px);
-}
-.modal.active{display:flex}
-.modal-content {
-  width:100%;max-width:460px;max-height:90vh;overflow-y:auto;
-  background:linear-gradient(145deg,#f5e6c8 0%,#e8d5a5 50%,#d4c298 100%);
-  border-radius:8px;padding:40px 30px;color:#3E2723;position:relative;
-  animation:modalIn 0.5s cubic-bezier(0.65,0,0.35,1);
-}
-.modal-content::-webkit-scrollbar{width:4px}
-.modal-content::-webkit-scrollbar-thumb{background:#8B5A2B}
-@keyframes modalIn{
-  from{opacity:0;transform:translateY(30px) scale(0.95)}
-  to{opacity:1;transform:translateY(0) scale(1)}
-}
-.modal-content::before {
-  content:'';position:absolute;top:0;left:0;right:0;height:5px;
-  background:linear-gradient(90deg,#8B5A2B,#C9A227,#E8D48B,#C9A227,#8B5A2B);
-}
-.modal-content::after {
-  content:'';position:absolute;bottom:0;left:0;right:0;height:5px;
-  background:linear-gradient(90deg,#8B5A2B,#C9A227,#E8D48B,#C9A227,#8B5A2B);
-}
-.modal-logo {
-  display:flex;align-items:center;justify-content:center;gap:10px;
-  margin-bottom:10px;
-}
-.modal-logo-icon {
-  width:45px;height:45px;background:linear-gradient(135deg,#8B5A2B,#C9A227);
-  border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;
-}
-.modal-logo-text {
-  font-family:'Cormorant Garamond',serif;font-size:1.1rem;
-  font-weight:700;color:#3E2723;letter-spacing:0.1em;
-}
-.modal-title {
-  font-family:'Cormorant Garamond',serif;font-size:1.8rem;
-  font-weight:600;text-align:center;margin-bottom:4px;color:#3E2723;
-}
-.modal-subtitle {
-  text-align:center;color:#5D4037;font-size:0.88rem;
-  margin-bottom:22px;padding-bottom:18px;border-bottom:1px dashed #8D6E63;
-}
-.modal-ornament{text-align:center;color:#8B5A2B;font-size:0.9rem;margin:12px 0}
-.form-group{margin-bottom:18px}
-.form-label {
-  display:block;font-size:0.75rem;letter-spacing:0.15em;
-  text-transform:uppercase;color:#5D4037;margin-bottom:6px;font-weight:600;
-}
-.form-group input,.form-group textarea {
-  width:100%;background:rgba(255,255,255,0.5);
-  border:none;border-bottom:2px solid #8D6E63;
-  padding:10px 8px;font-size:0.95rem;color:#3E2723;outline:none;
-  font-family:'Outfit',sans-serif;transition:all 0.3s;
-  border-radius:4px 4px 0 0;
-}
-.form-group input:focus,.form-group textarea:focus {
-  border-color:#C9A227;background:rgba(255,255,255,0.7);
-}
-.form-group textarea{resize:none}
-.location-status {
-  display:flex;align-items:center;gap:8px;font-size:0.75rem;
-  color:#888;margin-top:8px;
-}
-.location-status.active{color:#4ade80}
-.payment-buttons {
-  display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px;
-}
-.payment-btn {
-  padding:14px;border-radius:10px;border:none;cursor:pointer;
-  font-family:'Rajdhani',sans-serif;font-weight:700;font-size:0.9rem;
-  letter-spacing:0.05em;transition:all 0.3s;
-}
-.payment-btn.cash {
-  background:linear-gradient(145deg,#5D4037,#3E2723);
-  color:#F5E6C8;
-}
-.payment-btn.online {
-  background:linear-gradient(145deg,#25D366,#128C7E);
-  color:white;
-}
-.payment-btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,0.3)}
-#payment-area {
-  margin-top:18px;padding-top:18px;border-top:1px dashed #8D6E63;
-  display:none;
-}
-#payment-area.active{display:block}
-.qr-section {
-  text-align:center;margin:15px 0;
-}
-.qr-section img {
-  border:3px solid #5D4037;border-radius:8px;
-  box-shadow:0 4px 15px rgba(0,0,0,0.2);
-}
-.qr-label {
-  font-size:0.78rem;color:#5D4037;margin-top:8px;font-weight:600;
-  font-family:'Rajdhani',sans-serif;letter-spacing:0.1em;
-}
-.payment-apps {
-  display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:15px 0;
-}
-.pay-app-btn {
-  padding:12px 8px;background:white;border:1.5px solid #8D6E63;
-  border-radius:10px;cursor:pointer;font-weight:700;color:#3E2723;
-  font-size:0.75rem;transition:all 0.25s;
-  display:flex;flex-direction:column;align-items:center;gap:5px;
-  font-family:'Rajdhani',sans-serif;
-}
-.pay-app-btn:hover{background:#3E2723;color:white;border-color:#C9A227;transform:translateY(-2px)}
-.pay-app-btn .app-icon{font-size:1.5rem;line-height:1}
-.confirm-btn {
-  width:100%;background:var(--gradient-gold);border:none;color:#3E2723;
-  padding:14px;border-radius:8px;font-weight:700;cursor:pointer;
-  font-size:0.9rem;margin-top:10px;transition:all 0.3s;
-  font-family:'Rajdhani',sans-serif;letter-spacing:0.1em;
-}
-.confirm-btn:hover{transform:scale(1.02);box-shadow:0 8px 25px rgba(201,162,39,0.4)}
-.modal-close {
-  text-align:center;margin-top:18px;color:#8D6E63;
-  font-size:0.85rem;cursor:pointer;transition:color 0.3s;
-  font-family:'Rajdhani',sans-serif;letter-spacing:0.1em;
-}
-.modal-close:hover{color:#5D4037}
+.card-add-btn { background: transparent; border: 1px solid var(--gold); color: var(--gold); padding: 9px 22px; font-family: 'Rajdhani', sans-serif; font-size: 0.8rem; letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; border-radius: 30px; transition: all 0.3s; opacity: 0; transform: translateY(10px); position: relative; overflow: hidden; }
+.card-add-btn::before { content: ''; position: absolute; inset: 0; background: var(--gradient-gold); opacity: 0; transition: opacity 0.3s; }
+.card-wrapper:hover .card-add-btn { opacity: 1; transform: translateY(0); transition-delay: 0.1s }
+.card-add-btn:hover::before { opacity: 1 }
+.card-add-btn:hover { color: #000; box-shadow: var(--glow) }
+.card-add-btn span { position: relative; z-index: 1 }
+.card-add-btn.added { background: #4ade80; border-color: #4ade80; color: #000 }
 
-/* ========= BILL AREA ========= */
-#bill-area {
-  position:fixed;left:-9999px;background:white;color:#222;
-  padding:25px;width:380px;font-family:'Courier New',monospace;
-}
-.bill-header {
-  text-align:center;border-bottom:2px solid #222;padding-bottom:12px;
-  margin-bottom:12px;
-}
-.bill-logo-svg{display:block;margin:0 auto 8px}
-.bill-name {
-  font-family:'Georgia',serif;font-size:1.4rem;font-weight:700;
-  letter-spacing:0.1em;
-}
-.bill-tagline{font-size:0.75rem;color:#555;letter-spacing:0.2em}
-.bill-divider{border:none;border-top:1px dashed #999;margin:8px 0}
-.bill-item-row {
-  display:flex;justify-content:space-between;
-  font-size:0.88rem;padding:4px 0;
-}
-.bill-total-row {
-  display:flex;justify-content:space-between;
-  font-size:1rem;font-weight:700;
-  border-top:2px solid #222;padding-top:8px;margin-top:5px;
-}
-.bill-footer{text-align:center;margin-top:10px;font-size:0.75rem;color:#555}
+.premium-tag { text-align: center; padding: 50px 20px 40px; position: relative; z-index: 10; }
+.premium-tag p { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-style: italic; color: var(--gold); opacity: 0.8; }
 
-/* ========= TECH GRID BOTTOM ========= */
-.tech-grid-section {
-  position:relative;z-index:10;padding:40px 20px;
-  display:flex;align-items:center;justify-content:center;
-  overflow:hidden;
-}
-.tech-grid-section::before {
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(135deg,rgba(201,162,39,0.03),transparent,rgba(201,162,39,0.03));
-  border-top:1px solid rgba(201,162,39,0.1);
-  border-bottom:1px solid rgba(201,162,39,0.1);
-}
-.tech-stats {
-  display:flex;gap:60px;flex-wrap:wrap;justify-content:center;
-  position:relative;z-index:1;
-}
-.stat-item{text-align:center}
-.stat-num {
-  font-family:'Cormorant Garamond',serif;font-size:2.5rem;
-  color:var(--gold);font-weight:600;display:block;
-  background:var(--gradient-gold);-webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;background-clip:text;
-}
-.stat-label {
-  font-family:'Rajdhani',sans-serif;font-size:0.7rem;
-  letter-spacing:0.3em;text-transform:uppercase;color:var(--text-muted);
-  margin-top:4px;
-}
+/* ===== FLOATING CART ===== */
+#floating-cart { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(120px); z-index: 9999; transition: transform 0.6s; pointer-events: none; }
+#floating-cart.visible { transform: translateX(-50%) translateY(0); pointer-events: all; }
+.floating-cart-inner { position: relative; background: #0a0a0a; border-radius: 60px; padding: 2px; cursor: pointer; }
+.floating-cart-glow { position: absolute; inset: -3px; border-radius: 63px; background: conic-gradient(from 0deg, #8B6914, #C9A227, #E8D48B, #C9A227, #8B6914); animation: neonSpin 3s linear infinite; filter: blur(1px); z-index: -1; }
+@keyframes neonSpin { 0% { transform: rotate(0) } 100% { transform: rotate(360deg) } }
+.floating-cart-body { background: linear-gradient(135deg, #0d0d0d, #1a1500); border-radius: 58px; padding: 14px 28px; display: flex; align-items: center; gap: 14px; border: 1px solid rgba(201,162,39,0.2); min-width: 220px; justify-content: space-between; }
+.fc-total { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; color: var(--gold-light); font-weight: 600; }
+.fc-badge { background: var(--gradient-gold); color: #000; width: 28px; height: 28px; border-radius: 50%; font-weight: 700; font-size: 0.8rem; display: flex; align-items: center; justify-content: center; box-shadow: var(--glow); }
 
-/* Animations */
-@keyframes fadeInUp{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
-@media(prefers-reduced-motion:reduce){
-  *,*::before,**::after{animation-duration:0.01ms !important;transition-duration:0.01ms !important}
-}
+/* ===== CART SLIDE ===== */
+#cart-slide { position: fixed; top: 0; right: -105%; width: 100%; max-width: 430px; height: 100%; background: var(--bg-dark); z-index: 11000; transition: right 0.5s; border-left: 1px solid rgba(201,162,39,0.15); display: flex; flex-direction: column; box-shadow: -20px 0 60px rgba(0,0,0,0.5); }
+#cart-slide.active { right: 0 }
+.cart-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 10999; opacity: 0; visibility: hidden; transition: all 0.4s; }
+.cart-overlay.active { opacity: 1; visibility: visible }
+.cart-header { padding: 25px; border-bottom: 1px solid rgba(201,162,39,0.1); display: flex; justify-content: space-between; align-items: center; }
+.cart-close { background: none; border: 1px solid rgba(255,255,255,0.1); color: var(--text-muted); width: 36px; height: 36px; border-radius: 50%; cursor: pointer; font-size: 1.2rem; }
+#cart-items-wrapper { flex: 1; overflow-y: auto; padding: 20px }
+.cart-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 200px; color: var(--text-muted); gap: 10px; text-align: center; }
+.cart-item { display: flex; justify-content: space-between; align-items: center; padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+.cart-item-img { width: 50px; height: 50px; border-radius: 10px; object-fit: cover; border: 1px solid rgba(201,162,39,0.2); margin-right: 12px; }
+.cart-item-info { flex: 1 }
+.cart-item-info h4 { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; margin-bottom: 3px; }
+.qty-controls { display: flex; align-items: center; gap: 10px }
+.qty-btn { width: 28px; height: 28px; border-radius: 50%; border: 1px solid rgba(201,162,39,0.3); background: transparent; color: var(--gold); cursor: pointer; font-size: 1rem; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
+.qty-btn:hover { background: var(--gold); color: #000; box-shadow: var(--glow) }
+.item-total { font-size: 0.95rem; color: var(--gold); font-weight: 600; margin-left: 12px; font-family: 'Rajdhani', sans-serif; }
+.cart-footer { padding: 22px; border-top: 1px solid rgba(201,162,39,0.1); background: linear-gradient(0deg, rgba(201,162,39,0.03), transparent); }
+.cart-total { display: flex; justify-content: space-between; font-size: 1.2rem; margin-bottom: 18px; font-family: 'Cormorant Garamond', serif; }
+.cart-total span:last-child { color: var(--gold); font-weight: 600 }
+.checkout-btn { width: 100%; background: var(--gradient-gold); border: none; color: #000; padding: 15px; font-family: 'Rajdhani', sans-serif; font-size: 0.9rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; border-radius: 40px; cursor: pointer; transition: all 0.3s; box-shadow: var(--glow); }
+.checkout-btn:hover { transform: scale(1.02); box-shadow: var(--glow-strong) }
+
+/* ===== MODALS ===== */
+.modal { position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 15000; display: none; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(15px); }
+.modal.active { display: flex }
+.modal-content { width: 100%; max-width: 460px; max-height: 90vh; overflow-y: auto; background: linear-gradient(145deg, #f5e6c8 0%, #e8d5a5 50%, #d4c298 100%); border-radius: 8px; padding: 40px 30px; color: #3E2723; position: relative; }
+.modal-content::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 5px; background: linear-gradient(90deg, #8B5A2B, #C9A227, #E8D48B, #C9A227, #8B5A2B); }
+.form-group { margin-bottom: 18px }
+.form-label { display: block; font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; color: #5D4037; margin-bottom: 6px; font-weight: 600; }
+.form-group input, .form-group textarea { width: 100%; background: rgba(255,255,255,0.5); border: none; border-bottom: 2px solid #8D6E63; padding: 10px 8px; font-size: 0.95rem; color: #3E2723; outline: none; font-family: 'Outfit', sans-serif; transition: all 0.3s; border-radius: 4px 4px 0 0; }
+.form-group input:focus, .form-group textarea:focus { border-color: #C9A227; background: rgba(255,255,255,0.7); }
+.payment-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 20px; }
+.payment-btn { padding: 14px; border-radius: 10px; border: none; cursor: pointer; font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 0.9rem; letter-spacing: 0.05em; transition: all 0.3s; }
+.payment-btn.cash { background: linear-gradient(145deg, #5D4037, #3E2723); color: #F5E6C8; }
+.payment-btn.online { background: linear-gradient(145deg, #25D366, #128C7E); color: white; }
+.payment-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.3) }
+
+/* Payment Modal (Separate Popup) */
+#payment-modal .modal-content { max-width: 400px; padding: 30px; text-align: center; }
+#payment-modal .qr-section { margin: 20px 0; }
+#payment-modal .payment-apps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 15px 0; }
+#payment-modal .pay-app-btn { padding: 12px 8px; background: white; border: 1.5px solid #8D6E63; border-radius: 10px; cursor: pointer; font-weight: 700; color: #3E2723; font-size: 0.75rem; transition: all 0.25s; font-family: 'Rajdhani', sans-serif; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+#payment-modal .pay-app-btn:hover { background: #3E2723; color: white; border-color: #C9A227; }
+#payment-modal .confirm-btn { width: 100%; background: var(--gradient-gold); border: none; color: #3E2723; padding: 14px; border-radius: 8px; font-weight: 700; cursor: pointer; margin-top: 10px; }
+.modal-close { text-align: center; margin-top: 18px; color: #8D6E63; font-size: 0.85rem; cursor: pointer; transition: color 0.3s; font-family: 'Rajdhani', sans-serif; letter-spacing: 0.1em; }
+
+/* Closed Message Modal */
+.msg-icon { font-size: 4rem; margin-bottom: 15px; display: block; animation: shake 0.5s ease-in-out; }
+@keyframes shake { 0%, 100% { transform: translateX(0) } 25% { transform: translateX(-10px) } 75% { transform: translateX(10px) } }
+.msg-title { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; font-weight: 700; color: #3E2723; margin-bottom: 10px; }
+.msg-text { font-family: 'Outfit', sans-serif; font-size: 1rem; color: #5D4037; line-height: 1.6; margin-bottom: 20px; }
+
+/* ===== BILL AREA ===== */
+#bill-area { position: fixed; left: -9999px; background: white; color: #222; padding: 25px; width: 380px; font-family: 'Outfit', sans-serif; border: 8px solid #C9A227; }
+.bill-header { text-align: center; border-bottom: 2px solid #222; padding-bottom: 12px; margin-bottom: 12px; }
+.bill-name { font-family: 'Georgia', serif; font-size: 1.4rem; font-weight: 700; }
+
+/* ===== UTILITIES ===== */
+.scroll-progress { position: fixed; top: 0; left: 0; width: 0%; height: 2px; background: var(--gradient-gold); z-index: 99999; transition: width 0.1s; }
+#bg-canvas { position: fixed; inset: 0; z-index: 1; opacity: 0.4; pointer-events: none; }
+.cursor-follower { position: fixed; width: 20px; height: 20px; border: 1px solid var(--gold); border-radius: 50%; pointer-events: none; z-index: 99997; transition: transform 0.15s; transform: translate(-50%, -50%); display: none; }
+@media(min-width: 768px) { .cursor-follower { display: block } }
 </style>
 </head>
 <body>
 
-<!-- ========= SPLASH SCREEN ========= -->
+<!-- ===== SPLASH SCREEN ===== -->
 <div id="splash">
   <div class="splash-bg"></div>
   <div class="hex-grid"></div>
-  <div class="circuit-lines"></div>
-  <canvas id="splash-particles-canvas" style="position:absolute;inset:0;pointer-events:none;"></canvas>
   <div class="splash-logo-wrap">
     <div class="logo-ring-outer">
       <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" style="stop-color:#8B6914"/>
-            <stop offset="30%" style="stop-color:#C9A227"/>
-            <stop offset="50%" style="stop-color:#E8D48B"/>
-            <stop offset="70%" style="stop-color:#C9A227"/>
-            <stop offset="100%" style="stop-color:#8B6914"/>
-          </linearGradient>
-          <filter id="glow"><feGaussianBlur stdDeviation="2" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-        </defs>
-        <!-- Outer dashed ring -->
+        <defs><linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#8B6914"/><stop offset="50%" style="stop-color:#E8D48B"/><stop offset="100%" style="stop-color:#8B6914"/></linearGradient></defs>
         <circle cx="100" cy="100" r="95" fill="none" stroke="url(#goldGrad)" stroke-width="1" stroke-dasharray="4,3" opacity="0.6"/>
-        <!-- Tick marks -->
-        <g stroke="url(#goldGrad)" stroke-width="1.5" opacity="0.8">
-          <line x1="100" y1="5" x2="100" y2="15"/>
-          <line x1="100" y1="185" x2="100" y2="195"/>
-          <line x1="5" y1="100" x2="15" y2="100"/>
-          <line x1="185" y1="100" x2="195" y2="100"/>
-          <line x1="32" y1="32" x2="39" y2="39"/>
-          <line x1="161" y1="161" x2="168" y2="168"/>
-          <line x1="161" y1="32" x2="168" y2="39"/>
-          <line x1="32" y1="161" x2="39" y2="168"/>
-        </g>
-        <!-- Inner ring -->
-        <circle cx="100" cy="100" r="78" fill="none" stroke="url(#goldGrad)" stroke-width="0.5" opacity="0.4"/>
-        <!-- Hex nodes -->
-        <g fill="url(#goldGrad)" opacity="0.7">
-          <circle cx="100" cy="7" r="3"/>
-          <circle cx="7" cy="100" r="3"/>
-          <circle cx="193" cy="100" r="3"/>
-          <circle cx="100" cy="193" r="3"/>
-          <circle cx="33" cy="33" r="2"/>
-          <circle cx="167" cy="33" r="2"/>
-          <circle cx="33" cy="167" r="2"/>
-          <circle cx="167" cy="167" r="2"/>
-        </g>
       </svg>
-      <!-- Center logo element -->
       <div class="logo-center">
         <svg width="80" height="90" viewBox="0 0 80 90" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <linearGradient id="crownGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" style="stop-color:#8B6914"/>
-              <stop offset="50%" style="stop-color:#E8D48B"/>
-              <stop offset="100%" style="stop-color:#8B6914"/>
-            </linearGradient>
-          </defs>
-          <!-- Crown -->
+          <defs><linearGradient id="crownGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#8B6914"/><stop offset="50%" style="stop-color:#E8D48B"/><stop offset="100%" style="stop-color:#8B6914"/></linearGradient></defs>
           <path d="M10 35 L10 50 L70 50 L70 35 L58 45 L40 20 L22 45 Z" fill="url(#crownGrad)"/>
-          <circle cx="40" cy="20" r="4" fill="#E8D48B"/>
-          <circle cx="70" cy="35" r="3.5" fill="#E8D48B"/>
-          <circle cx="10" cy="35" r="3.5" fill="#E8D48B"/>
-          <!-- Egg shape -->
           <ellipse cx="40" cy="72" rx="20" ry="26" fill="url(#crownGrad)" opacity="0.9"/>
-          <ellipse cx="36" cy="68" rx="7" ry="10" fill="rgba(255,255,255,0.15)"/>
         </svg>
       </div>
     </div>
@@ -882,815 +298,372 @@ nav.scrolled {
       <div class="splash-divider"></div>
       <div class="splash-tagline">✦ The Royal Taste ✦</div>
     </div>
-    <button class="enter-btn" onclick="enterSite()">
-      <span>🍳 &nbsp; Enter Restaurant</span>
-    </button>
+    <!-- Typing Effect Container -->
+    <div class="typing-container">
+      <div class="typing-text" id="typing-text"></div>
+    </div>
     <p class="splash-bottom-text">Gujarat's Finest Egg Cuisine Since 2020</p>
   </div>
 </div>
 
-<div class="scroll-progress" id="scroll-progress"></div>
-<div class="noise-overlay"></div>
-<div class="cursor-follower" id="cursor"></div>
+<!-- Preloader -->
+<div id="preloader" style="display:none"><div class="loader-text" id="loader-text"></div><div class="loader-line"></div></div>
 
-<!-- ========= PRELOADER ========= -->
-<div id="preloader" style="display:none">
-  <div class="loader-text" id="loader-text"></div>
-  <div class="loader-line"></div>
-</div>
+<!-- Main Content (Hidden Initially) -->
+<div id="main-content">
+  <canvas id="bg-canvas"></canvas>
+  <div class="scroll-progress" id="scroll-progress"></div>
+  <div class="cursor-follower" id="cursor"></div>
 
-<canvas id="bg-canvas"></canvas>
-<canvas id="particle-canvas"></canvas>
-
-<!-- ========= NAVIGATION ========= -->
-<nav id="navbar">
-  <a href="#" class="nav-logo">
-    <div class="nav-logo-icon-wrap">
-      <span class="nav-logo-icon">🍳</span>
-    </div>
-    <div>
-      <span class="nav-logo-text">EGG MASTER</span>
-      <span class="nav-logo-sub">✦ The Royal Taste ✦</span>
-    </div>
-  </a>
-  <div class="nav-right">
-    <div class="lang-switcher">
-      <button class="lang-btn" onclick="toggleLangDropdown()">
-        <span>🌐</span>
-        <span id="current-lang">ENG</span>
-      </button>
-      <div class="lang-dropdown" id="lang-dropdown">
-        <div class="lang-option selected" onclick="setLanguage('en')">ENGLISH</div>
-        <div class="lang-option" onclick="setLanguage('hi')">हिंदी</div>
-        <div class="lang-option" onclick="setLanguage('gu')">ગુજરાતી</div>
+  <!-- NAV -->
+  <nav id="navbar">
+    <a href="#" class="nav-logo">
+      <div class="nav-logo-icon-wrap"><span class="nav-logo-icon">🍳</span></div>
+      <div>
+        <span class="nav-logo-text">EGG MASTER</span>
+        <span class="nav-logo-sub">✦ The Royal Taste ✦</span>
       </div>
-    </div>
-    <button class="cart-nav-btn" onclick="toggleCart(true)" id="cart-icon-btn">
-      <span>🛒</span>
-      <span id="cart-count" class="cart-badge" style="display:none">0</span>
-    </button>
-  </div>
-</nav>
-
-<!-- ========= HERO ========= -->
-<section class="hero">
-  <p class="hero-eyebrow" data-translate="hero_eyebrow">Gujarat's Finest</p>
-  <h1 class="hero-title">
-    <span class="line"><span>Special Egg</span></span>
-    <span class="line"><span><em>Delicacies</em></span></span>
-  </h1>
-  <div class="hero-divider"></div>
-  <div class="hero-timing">
-    <span class="timing-dot"></span>
-    <span data-translate="timing">8:00 AM – 2:00 PM &nbsp;|&nbsp; 7:00 PM – 12:00 AM</span>
-  </div>
-  <div class="hero-scroll">
-    <span class="scroll-text">Scroll</span>
-    <div class="scroll-line"></div>
-  </div>
-</section>
-
-<!-- Tech Stats -->
-<div class="tech-grid-section">
-  <div class="tech-stats">
-    <div class="stat-item">
-      <span class="stat-num">20+</span>
-      <div class="stat-label">Signature Dishes</div>
-    </div>
-    <div class="stat-item">
-      <span class="stat-num">4.9★</span>
-      <div class="stat-label">Royal Rating</div>
-    </div>
-    <div class="stat-item">
-      <span class="stat-num">5K+</span>
-      <div class="stat-label">Happy Guests</div>
-    </div>
-    <div class="stat-item">
-      <span class="stat-num">30m</span>
-      <div class="stat-label">Fast Delivery</div>
-    </div>
-  </div>
-</div>
-
-<!-- ========= MENU SECTION ========= -->
-<section class="menu-section">
-  <div class="section-header">
-    <p class="section-label">✦ Our Menu ✦</p>
-    <h2 class="section-title" data-translate="menu_title">Signature <em>Dishes</em></h2>
-  </div>
-  <div class="menu-grid" id="menu-grid"></div>
-</section>
-
-<div class="premium-tag">
-  <p data-translate="premium_tag">Tasted By Kings, Made For You</p>
-</div>
-
-<!-- ========= CART OVERLAY + SLIDE ========= -->
-<div class="cart-overlay" id="cart-overlay" onclick="toggleCart(false)"></div>
-<div id="cart-slide">
-  <div class="cart-header">
-    <h3 class="cart-title">🛒 <span data-translate="your_cart">Your Cart</span></h3>
-    <button class="cart-close" onclick="toggleCart(false)">✕</button>
-  </div>
-  <div id="cart-items-wrapper">
-    <div id="cart-items">
-      <div class="cart-empty">
-        <span class="cart-empty-icon">🍽️</span>
-        <span style="font-family:'Cormorant Garamond',serif;font-size:1.1rem">Your cart is empty</span>
-        <span style="font-size:0.8rem">Add delicious items above!</span>
+    </a>
+    <div class="nav-right">
+      <div class="lang-switcher">
+        <button class="lang-btn" onclick="toggleLangDropdown()"><span>🌐</span><span id="current-lang">ENG</span></button>
+        <div class="lang-dropdown" id="lang-dropdown">
+          <div class="lang-option selected" onclick="setLanguage('en')">ENGLISH</div>
+          <div class="lang-option" onclick="setLanguage('hi')">हिंदी</div>
+          <div class="lang-option" onclick="setLanguage('gu')">ગુજરાતી</div>
+        </div>
       </div>
+      <button class="cart-nav-btn" onclick="toggleCart(true)" id="cart-icon-btn"><span>🛒</span><span id="cart-count" class="cart-badge" style="display:none">0</span></button>
     </div>
-    <div id="cart-upsell-container"></div>
-  </div>
-  <div class="cart-footer">
-    <div class="cart-subtotals" id="cart-subtotals"></div>
-    <div class="cart-total">
-      <span data-translate="total">Total</span>
-      <span id="total-price">₹0</span>
-    </div>
-    <button class="checkout-btn" onclick="openOrderForm()" data-translate="checkout">Checkout Now →</button>
-  </div>
-</div>
+  </nav>
 
-<!-- ========= FLOATING CART ========= -->
-<div id="floating-cart" onclick="toggleCart(true)">
-  <div class="floating-cart-inner">
-    <div class="floating-cart-glow"></div>
-    <div class="floating-cart-body">
-      <span class="fc-icon">🛒</span>
-      <div class="fc-info">
-        <span class="fc-label" data-translate="your_cart">Your Cart</span>
-        <span class="fc-total" id="fc-total">₹0</span>
-      </div>
-      <div class="fc-badge" id="fc-count">0</div>
+  <!-- HERO -->
+  <section class="hero">
+    <p class="hero-eyebrow" data-translate="hero_eyebrow">Gujarat's Finest</p>
+    <h1 class="hero-title">
+      <span class="line"><span data-translate="line1">Special Egg</span></span>
+      <span class="line"><span><em data-translate="line2">Delicacies</em></span></span>
+    </h1>
+    <div class="hero-divider"></div>
+    <div class="hero-timing">
+      <div class="timing-status" id="timing-status">WE ARE OPEN</div>
+      <div class="timing-hours">8:00 AM – 2:00 PM &nbsp;|&nbsp; 7:00 PM – 12:00 AM</div>
+    </div>
+    <div class="hero-scroll"><span class="scroll-text">Scroll</span><div class="scroll-line"></div></div>
+  </section>
+
+  <!-- MENU -->
+  <section class="menu-section">
+    <div class="section-header">
+      <p class="section-label">✦ Our Menu ✦</p>
+      <h2 class="section-title" data-translate="menu_title">Signature <em>Dishes</em></h2>
+    </div>
+    <div class="menu-grid" id="menu-grid"></div>
+  </section>
+  <div class="premium-tag"><p data-translate="premium_tag">Tasted By Kings, Made For You</p></div>
+
+  <!-- CARTS & FLOATING -->
+  <div class="cart-overlay" id="cart-overlay" onclick="toggleCart(false)"></div>
+  <div id="cart-slide">
+    <div class="cart-header">
+      <h3 class="cart-title">🛒 <span data-translate="your_cart">Your Cart</span></h3>
+      <button class="cart-close" onclick="toggleCart(false)">✕</button>
+    </div>
+    <div id="cart-items-wrapper"><div id="cart-items"><div class="cart-empty"><span class="cart-empty-icon">🍽️</span><span>Your cart is empty</span></div></div><div id="cart-upsell-container"></div></div>
+    <div class="cart-footer">
+      <div class="cart-subtotals" id="cart-subtotals"></div>
+      <div class="cart-total"><span data-translate="total">Total</span><span id="total-price">₹0</span></div>
+      <button class="checkout-btn" onclick="openOrderForm()" data-translate="checkout">Checkout Now →</button>
     </div>
   </div>
-</div>
+  <div id="floating-cart" onclick="toggleCart(true)"><div class="floating-cart-inner"><div class="floating-cart-glow"></div><div class="floating-cart-body"><span>🛒</span><div><span class="fc-label">Cart</span><span class="fc-total" id="fc-total">₹0</span></div><div class="fc-badge" id="fc-count">0</div></div></div></div>
 
-<!-- ========= ORDER MODAL ========= -->
-<div id="order-modal" class="modal">
-  <div class="modal-content">
-    <div class="modal-logo">
-      <div class="modal-logo-icon">🍳</div>
-      <div class="modal-logo-text">EGG MASTER</div>
-    </div>
-    <h3 class="modal-title" data-translate="delivery_info">Delivery Info</h3>
-    <p class="modal-subtitle" data-translate="enter_details">Enter your delivery details below</p>
-    <div class="modal-ornament">❧ ❧ ❧</div>
-    <div class="form-group">
-      <label class="form-label">👤 Your Name</label>
-      <input type="text" id="c-name" data-translate-placeholder="ph_name" placeholder="Your Name...">
-    </div>
-    <div class="form-group">
-      <label class="form-label">📱 Contact Number</label>
-      <input type="tel" id="c-phone" data-translate-placeholder="ph_phone" placeholder="Contact Number...">
-    </div>
-    <div class="form-group">
-      <label class="form-label">📍 Delivery Address</label>
-      <textarea id="c-addr" data-translate-placeholder="ph_addr" placeholder="Delivery Address..." rows="2"></textarea>
-      <div id="loc-status" class="location-status">
-        <span id="loc-icon">📍</span>
-        <span id="loc-text">Fetching location...</span>
+  <!-- MODALS -->
+  <div id="order-modal" class="modal">
+    <div class="modal-content">
+      <div style="text-align:center; margin-bottom:15px;"><div style="font-family:'Cormorant Garamond',serif; font-size:1.5rem; color:#3E2723;">🍳 EGG MASTER</div></div>
+      <h3 class="modal-title" data-translate="delivery_info">Delivery Info</h3>
+      <p class="modal-subtitle" data-translate="enter_details">Enter your details</p>
+      <div class="form-group"><label class="form-label">👤 Name</label><input type="text" id="c-name" placeholder="Full Name"></div>
+      <div class="form-group"><label class="form-label">📱 Phone</label><input type="tel" id="c-phone" placeholder="Phone Number"></div>
+      <div class="form-group"><label class="form-label">📍 Address</label><textarea id="c-addr" placeholder="Address" rows="2"></textarea><div id="loc-status" class="location-status"><span id="loc-icon">📍</span><span id="loc-text">Fetching...</span></div></div>
+      <div class="payment-buttons">
+        <button class="payment-btn cash" onclick="submitOrder('Cash')">💵 Cash</button>
+        <button class="payment-btn online" onclick="showPaymentOptions()">📲 Online</button>
       </div>
+      <p class="modal-close" onclick="closeModal()">✕ Close</p>
     </div>
-    <div class="modal-ornament">❧ ❧ ❧</div>
-    <div class="payment-buttons">
-      <button class="payment-btn cash" onclick="submitOrder('Cash On Delivery')" data-translate="cash">💵 Cash</button>
-      <button class="payment-btn online" onclick="showPaymentOptions()" data-translate="online">📲 Online</button>
-    </div>
-    <div id="payment-area">
-      <p style="text-align:center;margin-bottom:5px;font-size:0.9rem">
-        Total: <strong id="pay-amt-display">₹0</strong>
-      </p>
-      <div class="qr-section">
-        <img id="qr-code-img" src="" alt="UPI QR Code" width="150" height="150">
-        <p class="qr-label">Scan to Pay via Any UPI App</p>
+  </div>
+
+  <!-- Payment Modal (Separate) -->
+  <div id="payment-modal" class="modal">
+    <div class="modal-content">
+      <div style="text-align:center; margin-bottom:15px;"><div style="font-family:'Cormorant Garamond',serif; font-size:1.5rem; color:#3E2723;">💳 PAYMENT</div></div>
+      <h3 class="modal-title">Online Payment</h3>
+      <p class="modal-subtitle">Scan QR or select app</p>
+      <p style="text-align:center; margin:10px 0; font-size:1.2rem; font-weight:bold;">Total: <span id="pay-amt-display-modal">₹0</span></p>
+      <div class="qr-section" style="text-align:center;">
+        <img id="qr-code-img-modal" src="" alt="QR" width="150" height="150">
+        <p class="qr-label" style="font-size:0.78rem;color:#5D4037;margin-top:8px;font-weight:600; font-family:'Rajdhani',sans-serif;letter-spacing:0.1em;">Scan to Pay via Any UPI App</p>
         <p style="font-size:0.7rem;color:#5D4037;margin-top:3px">UPI ID: ashishchavda9586@oksbi</p>
       </div>
-      <p style="text-align:center;font-size:0.8rem;color:#5D4037;margin-bottom:8px">— OR Select App —</p>
+      <p style="text-align:center;font-size:0.8rem;color:#5D4037;margin:15px 0 8px 0;">— OR Select App —</p>
       <div class="payment-apps">
-        <button class="pay-app-btn" onclick="openApp('gpay')" style="background:#fff; color:#000; border:1px solid #ddd;">
-          <span class="app-icon" style="font-size:1.5rem;">G</span> 
-          <span style="display:block; font-size:0.8rem; font-weight:700; margin-top:5px;">Google Pay</span>
-        </button>
-        <button class="pay-app-btn" onclick="openApp('phonepe')" style="background:#5F259F; color:#fff; border:none;">
-          <span class="app-icon" style="font-size:1.5rem;">P</span> 
-          <span style="display:block; font-size:0.8rem; font-weight:700; margin-top:5px;">PhonePe</span>
-        </button>
-        <button class="pay-app-btn" onclick="openApp('paytm')" style="background:#00BAF2; color:#fff; border:none;">
-          <span class="app-icon" style="font-size:1.5rem;">P</span> 
-          <span style="display:block; font-size:0.8rem; font-weight:700; margin-top:5px;">Paytm</span>
-        </button>
+        <button class="pay-app-btn" onclick="openApp('gpay')"><span style="font-size:1.5rem;">G</span><span>Google Pay</span></button>
+        <button class="pay-app-btn" onclick="openApp('phonepe')"><span style="font-size:1.5rem;">P</span><span>PhonePe</span></button>
+        <button class="pay-app-btn" onclick="openApp('paytm')"><span style="font-size:1.5rem;">P</span><span>Paytm</span></button>
       </div>
-      <button class="confirm-btn" onclick="submitOrder('Paid Online')">✅ Paid? Confirm & Send Order</button>
+      <button class="confirm-btn" onclick="submitOrder('Online')">✅ Paid? Confirm</button>
+      <p class="modal-close" onclick="closePaymentModal()">✕ Cancel</p>
     </div>
-    <p class="modal-close" onclick="closeModal()">✕ Close</p>
   </div>
-</div>
 
-<!-- ========= BILL AREA (Hidden) ========= -->
-<div id="bill-area">
-  <div class="bill-header">
-    <svg class="bill-logo-svg" width="60" height="70" viewBox="0 0 60 70" xmlns="http://www.w3.org/2000/svg">
-      <path d="M8 27 L8 38 L52 38 L52 27 L43 34 L30 15 L17 34 Z" fill="#C9A227"/>
-      <circle cx="30" cy="15" r="3" fill="#E8D48B"/>
-      <circle cx="52" cy="27" r="2.5" fill="#E8D48B"/>
-      <circle cx="8" cy="27" r="2.5" fill="#E8D48B"/>
-      <ellipse cx="30" cy="56" rx="15" ry="20" fill="#C9A227" opacity="0.85"/>
-    </svg>
-    <div class="bill-name">🍳 EGG MASTER</div>
-    <div class="bill-tagline">THE ROYAL TASTE — Gujarat's Finest</div>
+  <!-- Closed Modal -->
+  <div id="closed-modal" class="modal">
+    <div class="modal-content" style="max-width: 380px;">
+      <div style="text-align:center; padding: 20px 0;">
+        <span class="msg-icon">🔒</span>
+        <h3 class="msg-title" data-translate="closed_title">Oho! Band Ho Gaya</h3>
+        <p class="msg-text" data-translate="closed_msg">Kitchen is closed. 😴<br>Come tomorrow!</p>
+        <button class="checkout-btn" onclick="closeClosedModal()" style="background: #3E2723; color: #F5E6C8;">Theek Hai 👍</button>
+      </div>
+    </div>
   </div>
-  <p id="bill-date" style="font-size:11px;color:#555;margin:8px 0"></p>
-  <hr class="bill-divider">
-  <div id="bill-items-list"></div>
-  <hr class="bill-divider">
-  <div class="bill-total-row" id="bill-grand-total"></div>
-  <div class="bill-footer">
-    <p>📍 Thank you for your order!</p>
-    <p style="margin-top:4px">📞 +91 95860 96174</p>
-    <p style="margin-top:4px">⭐ Rate us on Google | Reorder on WhatsApp</p>
-  </div>
+
+  <!-- Bill -->
+  <div id="bill-area"><div class="bill-header"><div class="bill-name">🍳 EGG MASTER</div><div style="font-size:0.75rem;color:#555">THE ROYAL TASTE</div></div><p id="bill-date" style="font-size:11px;color:#555;margin:8px 0"></p><hr style="border:none;border-top:1px dashed #999;margin:8px 0"><div id="bill-items-list"></div><hr><div class="bill-total-row" id="bill-grand-total"></div></div>
 </div>
 
 <script>
-// ========= SECURITY =========
+// ===== SECURITY & PERFORMANCE INIT =====
 (function(){
-  document.addEventListener('contextmenu',e=>e.preventDefault());
-  window.addEventListener('keydown',function(e){
-    if(e.key==='F12'||(e.ctrlKey&&e.shiftKey&&['I','J','C'].includes(e.key))||(e.ctrlKey&&['U','S','P','C'].includes(e.key))){
-      e.preventDefault();return false;
-    }
-  });
+  document.addEventListener('contextmenu', e => e.preventDefault());
+  window.addEventListener('keydown', e => { if(e.key==='F12'||(e.ctrlKey&&e.shiftKey&&['I','J','C'].includes(e.key))||(e.ctrlKey&&['U','S'].includes(e.key))){ e.preventDefault(); return false; } });
+  console.log('%c⚠️ STOP!','color:red;font-size:50px;font-weight:bold;');
+  window.isMobile = window.innerWidth < 768;
+  window.particleCount = window.isMobile ? 15 : 40;
 })();
 
-// ========= SPLASH PARTICLES =========
-(function(){
-  const canvas=document.getElementById('splash-particles-canvas');
-  const ctx=canvas.getContext('2d');
-  function resize(){canvas.width=window.innerWidth;canvas.height=window.innerHeight}
-  resize();window.addEventListener('resize',resize);
-  const pts=[];
-  for(let i=0;i<80;i++){
-    pts.push({
-      x:Math.random()*window.innerWidth,
-      y:Math.random()*window.innerHeight,
-      r:Math.random()*2+0.5,
-      vx:(Math.random()-0.5)*0.4,
-      vy:(Math.random()-0.5)*0.4,
-      o:Math.random()*0.6+0.2
-    });
-  }
-  let splashAF;
-  function draw(){
-    splashAF=requestAnimationFrame(draw);
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    pts.forEach(p=>{
-      p.x+=p.vx;p.y+=p.vy;
-      if(p.x<0||p.x>canvas.width)p.vx*=-1;
-      if(p.y<0||p.y>canvas.height)p.vy*=-1;
-      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-      ctx.fillStyle=`rgba(201,162,39,${p.o})`;ctx.fill();
-    });
-  }
-  draw();
-  window.stopSplashParticles=function(){cancelAnimationFrame(splashAF)};
-})();
+const $ = id => document.getElementById(id);
 
-// ========= ENTER SITE =========
-function enterSite(){
-  document.getElementById('splash').classList.add('hidden');
-  if(window.stopSplashParticles)window.stopSplashParticles();
-  showPreloader();
+// ===== TYPING EFFECT & AUTO ENTER =====
+const textToType = "लगेगा टाइम पर, आएगा मज़ा...!";
+let typeIndex = 0;
+
+function typeWriter() {
+  const el = $('typing-text');
+  if (typeIndex < textToType.length) {
+    el.textContent += textToType.charAt(typeIndex);
+    typeIndex++;
+    setTimeout(typeWriter, 80);
+  } else {
+    // Typing complete -> Wait 2s -> Enter Site
+    setTimeout(enterSite, 2000);
+  }
 }
 
-function showPreloader(){
-  const pr=document.getElementById('preloader');
-  pr.style.display='flex';
-  const lt=document.getElementById('loader-text');
-  lt.innerHTML='';
-  'EGG MASTER'.split('').forEach((c,i)=>{
-    const s=document.createElement('span');
-    s.textContent=c===' '?'\u00A0':c;
-    s.style.animationDelay=`${i*0.06}s`;
+function enterSite() {
+  $('splash').classList.add('hidden');
+  setTimeout(() => {
+    $('preloader').style.display = 'flex';
+    runPreloader();
+    initSite();
+  }, 600);
+}
+
+function runPreloader() {
+  const lt = $('loader-text');
+  lt.innerHTML = '';
+  'EGG MASTER'.split('').forEach((c, i) => {
+    const s = document.createElement('span');
+    s.textContent = c === ' ' ? '\u00A0' : c;
+    s.style.animationDelay = `${i * 0.06}s`;
     lt.appendChild(s);
   });
-  setTimeout(()=>{
-    pr.classList.add('hidden');
-    setTimeout(()=>{pr.style.display='none'},900);
-  },2000);
+  setTimeout(() => {
+    $('preloader').classList.add('hidden');
+    $('main-content').classList.add('visible');
+    setTimeout(() => { $('preloader').style.display = 'none'; }, 500);
+  }, 2000);
 }
 
-// ========= CURSOR =========
-const cursor=document.getElementById('cursor');
-let cx=0,cy=0,tx=0,ty=0;
-document.addEventListener('mousemove',e=>{tx=e.clientX;ty=e.clientY});
-(function animCursor(){
-  cx+=(tx-cx)*0.15;cy+=(ty-cy)*0.15;
-  cursor.style.left=cx+'px';cursor.style.top=cy+'px';
-  requestAnimationFrame(animCursor);
-})();
-
-// ========= SCROLL EFFECTS =========
-window.addEventListener('scroll',()=>{
-  const st=window.scrollY,dh=document.documentElement.scrollHeight-window.innerHeight;
-  document.getElementById('scroll-progress').style.width=(st/dh*100)+'%';
-  const nav=document.getElementById('navbar');
-  if(st>50)nav.classList.add('scrolled');else nav.classList.remove('scrolled');
+// Start Logic immediately
+document.addEventListener('DOMContentLoaded', () => {
+  // Wait for logo fade in (1s) then start typing
+  setTimeout(typeWriter, 1000);
 });
 
-// ========= THREE.JS BG =========
-const scene=new THREE.Scene();
-const camera=new THREE.PerspectiveCamera(75,window.innerWidth/window.innerHeight,0.1,1000);
-const renderer=new THREE.WebGLRenderer({canvas:document.getElementById('bg-canvas'),alpha:true,antialias:true});
-renderer.setSize(window.innerWidth,window.innerHeight);
-renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
-const geo=new THREE.IcosahedronGeometry(15,1);
-const mat=new THREE.MeshBasicMaterial({color:0xC9A227,wireframe:true,transparent:true,opacity:0.25});
-const shape=new THREE.Mesh(geo,mat);
-scene.add(shape);
-const geo2=new THREE.TorusGeometry(25,0.3,8,60);
-const mat2=new THREE.MeshBasicMaterial({color:0xE8D48B,transparent:true,opacity:0.07});
-const torus=new THREE.Mesh(geo2,mat2);
-torus.rotation.x=Math.PI/4;
-scene.add(torus);
-camera.position.z=40;
-(function animBG(){
-  requestAnimationFrame(animBG);
-  shape.rotation.x+=0.0008;shape.rotation.y+=0.0015;
-  torus.rotation.z+=0.0005;
-  renderer.render(scene,camera);
-})();
-window.addEventListener('resize',()=>{
-  camera.aspect=window.innerWidth/window.innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth,window.innerHeight);
-});
+// ===== SITE INIT =====
+function initSite() {
+  updateTimingStatus();
+  setInterval(updateTimingStatus, 60000);
+  
+  // Cursor
+  const cursor = $('cursor');
+  let cx=0, cy=0, tx=0, ty=0;
+  document.addEventListener('mousemove', e => { tx = e.clientX; ty = e.clientY; });
+  (function anim() { cx += (tx - cx) * 0.15; cy += (ty - cy) * 0.15; cursor.style.left = cx + 'px'; cursor.style.top = cy + 'px'; requestAnimationFrame(anim); })();
 
-// ========= PARTICLE CANVAS =========
-(function(){
-  const c=document.getElementById('particle-canvas');
-  const ctx=c.getContext('2d');
-  function resize(){c.width=window.innerWidth;c.height=window.innerHeight}
-  resize();window.addEventListener('resize',resize);
-  const ps=[];
-  for(let i=0;i<50;i++){
-    ps.push({
-      x:Math.random()*window.innerWidth,
-      y:Math.random()*window.innerHeight,
-      r:Math.random()*1.5+0.5,
-      vy:-(Math.random()*0.5+0.2),
-      o:Math.random()*0.4+0.1
-    });
+  // Scroll
+  window.addEventListener('scroll', () => {
+    const st = window.scrollY, dh = document.documentElement.scrollHeight - window.innerHeight;
+    $('scroll-progress').style.width = (st / dh * 100) + '%';
+    $('navbar').classList.toggle('scrolled', st > 50);
+  });
+
+  // 3D Background (Performance Optimized)
+  if (typeof THREE !== 'undefined') {
+    try {
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+      const renderer = new THREE.WebGLRenderer({ canvas: $('bg-canvas'), alpha: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, window.isMobile ? 1 : 1.5));
+      
+      // Low poly for mobile
+      const seg = window.isMobile ? 0 : 1;
+      const shape = new THREE.Mesh(new THREE.IcosahedronGeometry(15, seg), new THREE.MeshBasicMaterial({ color: 0xC9A227, wireframe: true, transparent: true, opacity: 0.2 }));
+      scene.add(shape);
+      camera.position.z = 40;
+      (function anim() { requestAnimationFrame(anim); shape.rotation.x += 0.001; shape.rotation.y += 0.001; renderer.render(scene, camera); })();
+      
+      window.addEventListener('resize', () => { camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); });
+    } catch (e) { console.warn("3D failed", e); }
   }
-  (function draw(){
-    requestAnimationFrame(draw);
-    ctx.clearRect(0,0,c.width,c.height);
-    ps.forEach(p=>{
-      p.y+=p.vy;
-      if(p.y<-5){p.y=c.height+5;p.x=Math.random()*c.width}
-      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-      ctx.fillStyle=`rgba(201,162,39,${p.o})`;ctx.fill();
-    });
-  })();
-})();
 
-// ========= DATA =========
+  renderMenu();
+  updateUI();
+}
+
+// ===== LOGIC FUNCS =====
+let isRestaurantOpen = false;
+function updateTimingStatus() {
+  const h = new Date().getHours();
+  isRestaurantOpen = (h >= 8 && h < 14) || (h >= 19);
+  const el = $('timing-status');
+  if (el) {
+    el.textContent = isRestaurantOpen ? "WE ARE OPEN" : "WE ARE CLOSED";
+    el.className = "timing-status " + (isRestaurantOpen ? "open" : "closed");
+  }
+}
+
+function toggleLangDropdown() { $('lang-dropdown').classList.toggle('active'); }
+function setLanguage(l) {
+  currentLang = l;
+  const d = translations[l];
+  document.querySelectorAll('[data-translate]').forEach(e => { const k = e.getAttribute('data-translate'); if (d[k]) e.textContent = d[k]; });
+  $('current-lang').textContent = { en: 'ENG', hi: 'HIN', gu: 'GUJ' }[l];
+  document.querySelectorAll('.lang-option').forEach(o => { o.classList.remove('selected'); if (o.getAttribute('onclick').includes(`'${l}'`)) o.classList.add('selected'); });
+  $('lang-dropdown').classList.remove('active');
+  renderMenu(); updateUI();
+}
+document.addEventListener('click', e => { if (!e.target.closest('.lang-switcher')) $('lang-dropdown').classList.remove('active'); });
+
+function renderMenu() {
+  const t = translations[currentLang];
+  $('menu-grid').innerHTML = menu.map((item, i) => {
+    const b = item.badge === 'spicy' ? '<span class="badge spicy">🌶️ Spicy</span>' : item.badge === 'popular' ? '<span class="badge popular">⭐ Popular</span>' : item.badge === 'new' ? '<span class="badge new">✨ New</span>' : '';
+    const n = t[item.name] || item.name;
+    return `<div class="card-wrapper" data-index="${i}"><div class="menu-card"><div class="card-front"><div class="card-front-img"><img src="${item.img}" alt="${n}" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1482049016688-2d3e1b311543?w=400'"></div><div class="card-front-content"><div class="badge-row">${b}</div><h3 class="card-name">${n}</h3><p class="card-price">${t.rupee}${item.price}</p><div class="card-dish-info">${t.dish_info}</div><button class="card-add-btn" onclick="event.stopPropagation();addToCart(${item.id},this)"><span>${t.add_to_cart}</span></button></div></div></div></div>`;
+  }).join('');
+  const obs = new IntersectionObserver(es => { es.forEach(e => { if (e.isIntersecting) { setTimeout(() => e.target.classList.add('visible'), parseInt(e.target.dataset.index) * 80); obs.unobserve(e.target); } }); }, { threshold: 0.1 });
+  document.querySelectorAll('.card-wrapper').forEach(c => obs.observe(c));
+  document.querySelectorAll('.card-wrapper').forEach(c => { c.addEventListener('mouseenter', () => $('cursor').classList.add('hover')); c.addEventListener('mouseleave', () => $('cursor').classList.remove('hover')); });
+}
+
+function addToCart(id, btn) {
+  const item = menu.find(m => m.id === id);
+  const ex = cart.find(c => c.id === id);
+  ex ? ex.qty++ : cart.push({ ...item, qty: 1 });
+  const t = translations[currentLang];
+  const s = btn.querySelector('span');
+  s.textContent = t.added; btn.classList.add('added');
+  setTimeout(() => { s.textContent = t.add_to_cart; btn.classList.remove('added'); }, 600);
+  updateUI();
+}
+function addChhas() { const e = cart.find(c => c.id === CHHAS_ID); e ? e.qty++ : cart.push({ id: CHHAS_ID, name: "Masala Chhas", price: 10, qty: 1, img: chhasImg }); updateUI(); }
+function changeQty(id, d) { const i = cart.findIndex(c => c.id === id); if (i > -1) { cart[i].qty += d; if (cart[i].qty <= 0) cart.splice(i, 1); } updateUI(); }
+function toggleCart(v) { $('cart-slide').classList.toggle('active', v); $('cart-overlay').classList.toggle('active', v); }
+
+function updateUI() {
+  let total = 0, count = 0; const t = translations[currentLang];
+  if (cart.length === 0) {
+    $('cart-items').innerHTML = '<div class="cart-empty"><span class="cart-empty-icon">🍽️</span><span>Empty</span></div>';
+  } else {
+    $('cart-items').innerHTML = cart.map(i => { total += i.price * i.qty; count += i.qty; const n = t[i.name] || i.name; return `<div class="cart-item"><img src="${i.img || chhasImg}" class="cart-item-img"><div class="cart-item-info"><h4>${n}</h4><span>${t.rupee}${i.price}</span></div><div class="qty-controls"><button class="qty-btn" onclick="changeQty(${i.id},-1)">−</button><span class="qty-num">${i.qty}</span><button class="qty-btn" onclick="changeQty(${i.id},1)">+</button></div><span class="item-total">${t.rupee}${i.price * i.qty}</span></div>`; }).join('');
+  }
+  if (!cart.some(i => i.id === CHHAS_ID) && cart.length > 0) { $('cart-upsell-container').innerHTML = `<div class="cart-upsell"><img src="${chhasImg}" class="upsell-img"><div class="upsell-info"><div class="upsell-title">${t.upsell_title}</div><div class="upsell-price">₹10</div></div><button class="upsell-btn" onclick="addChhas()">${t.upsell_btn}</button></div>`; } else { $('cart-upsell-container').innerHTML = ''; }
+  $('cart-subtotals').innerHTML = `<div class="subtotal-row"><span>Items</span><span>${count}</span></div><div class="subtotal-row"><span>Delivery</span><span style="color:#4ade80">FREE</span></div>`;
+  $('total-price').textContent = t.rupee + total;
+  $('fc-total').textContent = t.rupee + total;
+  $('fc-count').textContent = count;
+  const b = $('cart-count');
+  if (count > 0) { b.textContent = count; b.style.display = 'flex'; $('cart-icon-btn').classList.add('active'); $('floating-cart').classList.add('visible'); } else { b.style.display = 'none'; $('cart-icon-btn').classList.remove('active'); $('floating-cart').classList.remove('visible'); }
+}
+
+function openOrderForm() { if (cart.length === 0) return; $('order-modal').classList.add('active'); getLoc(); }
+function closeModal() { $('order-modal').classList.remove('active'); }
+function getLoc() { if (navigator.geolocation) navigator.geolocation.getCurrentPosition(p => { liveLocationUrl = `https://maps.google.com/?q=${p.coords.latitude},${p.coords.longitude}`; $('loc-status').classList.add('active'); $('loc-icon').textContent = '✅'; $('loc-text').textContent = 'Location captured'; }, () => { $('loc-icon').textContent = '⚠️'; $('loc-text').textContent = 'Denied'; }); }
+
+// Payment Popup Logic
+function showPaymentOptions() {
+  const amt = $('total-price').textContent.replace('₹', '');
+  if (!amt || amt === '0') { alert('Cart is empty!'); return; }
+  $('pay-amt-display-modal').textContent = '₹' + amt;
+  $('qr-code-img-modal').src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(`upi://pay?pa=${UPI_ID}&pn=${MERCHANT_NAME}&am=${amt}&cu=INR`)}`;
+  $('order-modal').classList.remove('active');
+  $('payment-modal').classList.add('active');
+}
+function closePaymentModal() { $('payment-modal').classList.remove('active'); }
+function openApp(t) { const a = $('total-price').textContent.replace('₹', ''); const u = t === 'gpay' ? `gpay://upi/pay?pa=${UPI_ID}&pn=${MERCHANT_NAME}&am=${a}&cu=INR` : t === 'phonepe' ? `phonepe://pay?pa=${UPI_ID}&pn=${MERCHANT_NAME}&am=${a}&cu=INR` : `upi://pay?pa=${UPI_ID}&pn=${MERCHANT_NAME}&am=${a}&cu=INR`; window.location.href = u; }
+
+async function submitOrder(m) {
+  const n = $('c-name').value.trim(), p = $('c-phone').value.trim(), a = $('c-addr').value.trim();
+  if (!n || !p || !a) { alert('Fill all fields'); return; }
+  if (!isRestaurantOpen) { closeModal(); closePaymentModal(); $('closed-modal').classList.add('active'); return; }
+  
+  const t = translations[currentLang], tot = $('total-price').textContent, oid = Math.floor(Math.random() * 9000) + 1000, d = new Date().toLocaleString('en-IN');
+  $('bill-date').textContent = `${d} | #${oid}`;
+  $('bill-items-list').innerHTML = cart.map(i => `<div class="bill-item-row"><span>${t[i.name] || i.name} x${i.qty}</span><span>₹${i.price * i.qty}</span></div>`).join('');
+  $('bill-grand-total').innerHTML = `<span>TOTAL</span><span>${tot}</span>`;
+  const ba = $('bill-area'); ba.style.cssText = 'position:fixed;left:0;top:0;z-index:999999;background:white;';
+  await new Promise(r => setTimeout(r, 200));
+  try { const c = await html2canvas(ba, { scale: 2.5 }); const l = document.createElement('a'); l.download = `Bill_${oid}.jpg`; l.href = c.toDataURL('jpeg', 0.9); l.click(); } catch (e) { }
+  ba.style.cssText = 'position:fixed;left:-9999px;';
+  const msg = `🍳 *ORDER* \n👤 ${n}\n📞 ${p}\n📍 ${a}\n💰 ${tot}\n🗺 ${liveLocationUrl}\n📋 ${cart.map(i => `• ${t[i.name]} x${i.qty}`).join('\n')}`;
+  window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
+  cart = []; updateUI(); closeModal(); closePaymentModal(); toggleCart(false); showToast();
+}
+
+function closeClosedModal() { $('closed-modal').classList.remove('active'); }
+function showToast() { const d = document.createElement('div'); d.style.cssText = `position:fixed;top:20px;left:50%;transform:translateX(-50%);background:var(--gradient-gold);color:#000;padding:15px 30px;border-radius:40px;font-family:Rajdhani,sans-serif;z-index:999999;box-shadow:var(--glow);`; d.textContent = '🎉 Order Sent!'; document.body.appendChild(d); setTimeout(() => d.remove(), 3000); }
+
+// Data
 const WHATSAPP_NUMBER="919586096174";
 const UPI_ID="ashishchavda9586@oksbi";
 const MERCHANT_NAME="Egg Master";
 const CHHAS_ID=99;
 const chhasImg="https://i.ibb.co/5W7r68NC/masala-chhas.jpg";
-
 let cart=[];
 let currentLang='en';
 let liveLocationUrl="";
 
 const translations={
-  en:{
-    hero_eyebrow:"Gujarat's Finest",
-    timing:"8:00 AM – 2:00 PM  |  7:00 PM – 12:00 AM",
-    menu_title:"Signature Dishes",
-    premium_tag:"Tasted By Kings, Made For You",
-    your_cart:"Your Cart",
-    total:"Total",
-    checkout:"Checkout Now",
-    delivery_info:"Delivery Info",
-    enter_details:"Enter your delivery details",
-    ph_name:"Your Name...",
-    ph_phone:"Contact Number...",
-    ph_addr:"Delivery Address...",
-    cash:"💵 Cash",
-    online:"📲 Online",
-    confirm:"✅ Paid? Send Order",
-    close:"✕ Close",
-    add_to_cart:"Add to Cart",
-    added:"Added!",
-    rupee:"₹",
-    upsell_title:"Add Masala Chhas?",
-    upsell_btn:"Add ₹10"
-  },
-  hi:{
-    hero_eyebrow:"गुजरात का सर्वश्रेष्ठ",
-    timing:"सुबह 8:00 - दोपहर 2:00 | शाम 7:00 - रात 12:00",
-    menu_title:"हस्ताक्षर व्यंजन",
-    premium_tag:"राजाओं का स्वाद, आपके लिए बना",
-    your_cart:"आपका कार्ट",
-    total:"कुल",
-    checkout:"अभी ऑर्डर करें",
-    delivery_info:"डिलीवरी जानकारी",
-    enter_details:"अपना विवरण दर्ज करें",
-    ph_name:"आपका नाम...",
-    ph_phone:"संपर्क नंबर...",
-    ph_addr:"पूरा पता...",
-    cash:"💵 कैश",
-    online:"📲 ऑनलाइन",
-    confirm:"✅ भुगतान किया? ऑर्डर भेजें",
-    close:"✕ बंद करें",
-    add_to_cart:"जोड़ें",
-    added:"जोड़ा गया!",
-    rupee:"₹",
-    upsell_title:"मसाला छाछ जोड़ें?",
-    upsell_btn:"जोड़ें ₹10"
-  },
-  gu:{
-    hero_eyebrow:"ગુજરાતનું શ્રેષ્ઠ",
-    timing:"સવારે 8:00 - બપોરે 2:00 | સાંજે 7:00 - રાત્રે 12:00",
-    menu_title:"હસ્તાક્ષર વાનગીઓ",
-    premium_tag:"રાજાઓનો સ્વાદ, તમારા માટે બનાવેલ",
-    your_cart:"તમારું કાર્ટ",
-    total:"કુલ",
-    checkout:"હવે ઓર્ડર કરો",
-    delivery_info:"ડિલિવરી માહિતી",
-    enter_details:"તમારી વિગતો દાખલ કરો",
-    ph_name:"તમારું નામ...",
-    ph_phone:"સંપર્ક નંબર...",
-    ph_addr:"સંપૂર્ણ સરનામું...",
-    cash:"💵 કેશ",
-    online:"📲 ઓનલાઈન",
-    confirm:"✅ ચૂકવ્યું? ઓર્ડર મોકલો",
-    close:"✕ બંધ કરો",
-    add_to_cart:"ઉમેરો",
-    added:"ઉમેર્યું!",
-    rupee:"₹",
-    upsell_title:"મસાલા છાસ ઉમેરો?",
-    upsell_btn:"ઉમેરો ₹10"
-  }
+  en:{ hero_eyebrow:"Gujarat's Finest", line1:"Special Egg", line2:"Delicacies", menu_title:"Signature Dishes", premium_tag:"Tasted By Kings, Made For You", your_cart:"Your Cart", total:"Total", checkout:"Checkout Now", delivery_info:"Delivery Info", enter_details:"Enter details", cash:"💵 Cash", online:"📲 Online", add_to_cart:"Add", added:"Added!", rupee:"₹", upsell_title:"Add Chhas?", upsell_btn:"Add ₹10", dish_info: "Made with 2 eggs + 2 rotis in our special style", closed_title: "Oho! Closed", closed_msg: "Kitchen is closed. 😴<br>Come tomorrow!" },
+  hi:{ hero_eyebrow:"गुजरात का सर्वश्रेष्ठ", line1:"विशेष अंडा", line2:"व्यंजन", menu_title:"हस्ताक्षर व्यंजन", premium_tag:"राजाओं का स्वाद", your_cart:"आपका कार्ट", total:"कुल", checkout:"ऑर्डर करें", delivery_info:"डिलीवरी जानकारी", enter_details:"विवरण दर्ज करें", cash:"💵 कैश", online:"📲 ऑनलाइन", add_to_cart:"जोड़ें", added:"जोड़ा गया!", rupee:"₹", upsell_title:"छाछ जोड़ें?", upsell_btn:"जोड़ें ₹10", dish_info: "2 अंडे से बनेगा और साथ में 2 रोटी, अपनी स्टाइल में कुछ स्पेशल", closed_title: "ओहो! बंद हो गया", closed_msg: "किचन बंद है। 😴<br>कल आना!" },
+  gu:{ hero_eyebrow:"ગુજરાતનું શ્રેષ્ઠ", line1:"વિશેષ ઇંડા", line2:"વાનગીઓ", menu_title:"હસ્તાક્ષર વાનગીઓ", premium_tag:"રાજાઓનો સ્વાદ", your_cart:"તમારું કાર્ટ", total:"કુલ", checkout:"ઓર્ડર કરો", delivery_info:"ડિલિવરી", enter_details:"વિગતો", cash:"💵 કેશ", online:"📲 ઓનલાઈન", add_to_cart:"ઉમેરો", added:"ઉમેર્યું!", rupee:"₹", upsell_title:"છાસ ઉમેરો?", upsell_btn:"ઉમેરો ₹10", dish_info: "2 ઇંડાથી બનશે અને સાથે 2 રોટલી, અમારી ખાસ સ્ટાઇલમાં", closed_title: "અરે! બંધ થયું", closed_msg: "કિચન બંધ છે. 😴<br>કાલે આવજો!" }
 };
 
-// ========= 20 MENU ITEMS =========
 const menu=[
-  // Original 8 - prices and names preserved
-  {id:1,name:"Boiled Egg Fry",price:50,img:"https://i.ibb.co/xSdzbzzf/boild-egg-fry.jpg",badge:"popular"},
-  {id:2,name:"Bombay Omlet",price:50,img:"https://i.ibb.co/vv1xsk7G/bombe-omlet.jpg",badge:"popular"},
-  {id:3,name:"Bread Omlet",price:60,img:"https://i.ibb.co/JRS6Lcyc/bread-omlet.jpg",badge:""},
-  {id:4,name:"Egg Bhurji",price:60,img:"https://i.ibb.co/4Rh3gjss/egg-bhurji.jpg",badge:"spicy"},
-  {id:5,name:"Egg Kheema",price:60,img:"https://i.ibb.co/7NJbpHnw/egg-khima.jpg",badge:"spicy"},
-  {id:7,name:"Egg Tikka",price:60,img:"https://i.ibb.co/8DgfRBnK/egg-mashala-tikka.jpg",badge:"spicy"},
-  // 12 new items
-  {id:10,name:"Egg Full Fry",price:50,img:"https://images.unsplash.com/photo-1525351484163-7529414344d8?w=600&q=80",badge:""},
-  {id:11,name:"Masala Omelette",price:60,img:"https://images.unsplash.com/photo-1510693206972-df098062cb71?w=600&q=80",badge:"spicy"},
- 
-  {id:13,name:"Egg Cheese Omlet",price:90,img:"https://images.unsplash.com/photo-1584278860047-22db9ff82bed?w=600&q=80",badge:"new"},
-  {id:14,name:"Egg Curry",price:80,img:"https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=600&q=80",badge:"popular"},
-  {id:15,name:"Egg Paratha",price:70,img:"https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=600&q=80",badge:"new"},
-  
-  
-  {id:20,name:"Double Egg Omlet",price:80,img:"https://images.unsplash.com/photo-1541963463532-d68292c34b19?w=600&q=80",badge:"popular"}
+  {id:1,name:"Boiled Egg Fry",price:50,img:"https://i.ibb.co/xSdzbzzf/boild-egg-fry.jpg",badge:"popular"}, {id:2,name:"Bombay Omlet",price:50,img:"https://i.ibb.co/vv1xsk7G/bombe-omlet.jpg",badge:"popular"},
+  {id:3,name:"Bread Omlet",price:60,img:"https://i.ibb.co/JRS6Lcyc/bread-omlet.jpg"}, {id:4,name:"Egg Bhurji",price:60,img:"https://i.ibb.co/4Rh3gjss/egg-bhurji.jpg",badge:"spicy"},
+  {id:5,name:"Egg Kheema",price:60,img:"https://i.ibb.co/7NJbpHnw/egg-khima.jpg",badge:"spicy"}, {id:7,name:"Egg Tikka",price:60,img:"https://i.ibb.co/8DgfRBnK/egg-mashala-tikka.jpg",badge:"spicy"},
+  {id:10,name:"Egg Full Fry",price:50,img:"https://images.unsplash.com/photo-1525351484163-7529414344d8?w=400"}, {id:11,name:"Masala Omelette",price:60,img:"https://images.unsplash.com/photo-1510693206972-df098062cb71?w=400",badge:"spicy"},
+  {id:13,name:"Egg Cheese Omlet",price:90,img:"https://images.unsplash.com/photo-1584278860047-22db9ff82bed?w=400",badge:"new"}, {id:14,name:"Egg Curry",price:80,img:"https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=400",badge:"popular"},
+  {id:15,name:"Egg Paratha",price:70,img:"https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=400",badge:"new"}, {id:16,name:"Egg Maggi",price:70,img:"https://images.unsplash.com/photo-1569050467447-ce54b3bbc37d?w=400",badge:"popular"},
+  {id:17,name:"Egg Rice",price:80,img:"https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=400"}, {id:20,name:"Double Egg Omlet",price:80,img:"https://i.ibb.co/RTFjB7Mn/duble-egg-omlet.jpg",badge:"popular"}
 ];
 
-// ========= LANGUAGE =========
-function toggleLangDropdown(){
-  document.getElementById('lang-dropdown').classList.toggle('active');
-}
-function setLanguage(lang){
-  currentLang=lang;
-  const d=translations[lang];
-  document.querySelectorAll('[data-translate]').forEach(el=>{
-    const k=el.getAttribute('data-translate');
-    if(d[k])el.textContent=d[k];
-  });
-  document.querySelectorAll('[data-translate-placeholder]').forEach(el=>{
-    const k=el.getAttribute('data-translate-placeholder');
-    if(d[k])el.placeholder=d[k];
-  });
-  const names={en:'ENG',hi:'HIN',gu:'GUJ'};
-  document.getElementById('current-lang').textContent=names[lang];
-  document.querySelectorAll('.lang-option').forEach(opt=>{
-    opt.classList.remove('selected');
-    if(opt.getAttribute('onclick').includes(`'${lang}'`))opt.classList.add('selected');
-  });
-  document.getElementById('lang-dropdown').classList.remove('active');
-  updateUI();
-}
-document.addEventListener('click',e=>{
-  if(!e.target.closest('.lang-switcher'))
-    document.getElementById('lang-dropdown').classList.remove('active');
-});
-
-// ========= RENDER MENU =========
-function renderMenu(){
-  const t=translations[currentLang];
-  const grid=document.getElementById('menu-grid');
-  grid.innerHTML=menu.map((item,index)=>{
-    let badges='';
-    if(item.badge==='spicy')badges='<span class="badge spicy">🌶 Spicy</span>';
-    else if(item.badge==='popular')badges='<span class="badge popular">⭐ Popular</span>';
-    else if(item.badge==='new')badges='<span class="badge new">✨ New</span>';
-    
-    // Note: Removed card-back HTML since flip is disabled
-    return `
-    <div class="card-wrapper" data-index="${index}" data-id="${item.id}">
-      <div class="menu-card" id="card-${item.id}">
-        <!-- FRONT ONLY -->
-        <div class="card-front">
-          <div class="card-front-img">
-            <img src="${item.img}" alt="${item.name}" loading="lazy"
-              onerror="this.src='https://images.unsplash.com/photo-1482049016688-2d3e1b311543?w=600&q=80'">
-          </div>
-          <div class="card-front-content">
-            <div class="badge-row">${badges}</div>
-            <h3 class="card-name">${item.name}</h3>
-            <p class="card-price">${t.rupee}${item.price}</p>
-            <button class="card-add-btn" id="btn-${item.id}"
-              onclick="event.stopPropagation(); addToCart(${item.id}, this)">
-              <span>${t.add_to_cart}</span>
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>`;
-  }).join('');
-
-  // Intersection Observer
-  const observer=new IntersectionObserver(entries=>{
-    entries.forEach(entry=>{
-      if(entry.isIntersecting){
-        const delay=parseInt(entry.target.dataset.index)*80;
-        setTimeout(()=>entry.target.classList.add('visible'),delay);
-        observer.unobserve(entry.target);
-      }
-    });
-  },{threshold:0.1});
-  document.querySelectorAll('.card-wrapper').forEach(cw=>observer.observe(cw));
-
-  // Hover effects
-  document.querySelectorAll('.card-wrapper').forEach(cw=>{
-    // Click to flip logic removed
-    cw.addEventListener('mouseenter',()=>cursor.classList.add('hover'));
-    cw.addEventListener('mouseleave',()=>cursor.classList.remove('hover'));
-  });
-  document.querySelectorAll('button,a').forEach(el=>{
-    el.addEventListener('mouseenter',()=>cursor.classList.add('hover'));
-    el.addEventListener('mouseleave',()=>cursor.classList.remove('hover'));
-  });
-}
-
-// ========= CART FUNCTIONS =========
-function addToCart(id,btn){
-  const item=menu.find(m=>m.id===id);
-  const existing=cart.find(c=>c.id===id);
-  if(existing)existing.qty++;
-  else cart.push({...item,qty:1});
-
-  const t=translations[currentLang];
-  const span=btn.querySelector('span');
-  span.textContent=t.added;
-  btn.classList.add('added');
-
-  // Flip logic removed
-  setTimeout(()=>{
-    span.textContent=t.add_to_cart;
-    btn.classList.remove('added');
-  },600);
-
-  updateUI();
-}
-
-function addChhas(){
-  const existing=cart.find(c=>c.id===CHHAS_ID);
-  if(existing)existing.qty++;
-  else cart.push({id:CHHAS_ID,name:"Masala Chhas",price:10,qty:1,img:chhasImg});
-  updateUI();
-}
-
-function changeQty(id,amount){
-  const idx=cart.findIndex(c=>c.id===id);
-  if(idx>-1){
-    cart[idx].qty+=amount;
-    if(cart[idx].qty<=0)cart.splice(idx,1);
-  }
-  updateUI();
-}
-
-function toggleCart(show){
-  document.getElementById('cart-slide').classList.toggle('active',show);
-  document.getElementById('cart-overlay').classList.toggle('active',show);
-}
-
-function updateUI(){
-  let total=0,count=0;
-  const t=translations[currentLang];
-
-  if(cart.length===0){
-    document.getElementById('cart-items').innerHTML=`
-      <div class="cart-empty">
-        <span class="cart-empty-icon">🍽️</span>
-        <span style="font-family:'Cormorant Garamond',serif;font-size:1.1rem">Your cart is empty</span>
-        <span style="font-size:0.8rem">Add delicious items above!</span>
-      </div>`;
-  } else {
-    document.getElementById('cart-items').innerHTML=cart.map(item=>{
-      total+=item.price*item.qty;count+=item.qty;
-      return `
-      <div class="cart-item">
-        <img src="${item.img||chhasImg}" class="cart-item-img" alt="${item.name}"
-          onerror="this.src='${chhasImg}'">
-        <div class="cart-item-info" style="flex:1">
-          <h4>${item.name}</h4>
-          <span>${t.rupee}${item.price} each</span>
-        </div>
-        <div style="display:flex;align-items:center">
-          <div class="qty-controls">
-            <button class="qty-btn" onclick="changeQty(${item.id},-1)">−</button>
-            <span class="qty-num">${item.qty}</span>
-            <button class="qty-btn" onclick="changeQty(${item.id},1)">+</button>
-          </div>
-          <span class="item-total">${t.rupee}${item.price*item.qty}</span>
-        </div>
-      </div>`;
-    }).join('');
-  }
-
-  // Upsell
-  const hasChhas=cart.some(i=>i.id===CHHAS_ID);
-  const uc=document.getElementById('cart-upsell-container');
-  if(!hasChhas&&cart.length>0){
-    uc.innerHTML=`
-    <div class="cart-upsell">
-      <img src="${chhasImg}" class="upsell-img" alt="Chhas">
-      <div class="upsell-info">
-        <div class="upsell-title">${t.upsell_title}</div>
-        <div class="upsell-price">Just ₹10</div>
-      </div>
-      <button class="upsell-btn" onclick="addChhas()">${t.upsell_btn}</button>
-    </div>`;
-  } else {uc.innerHTML=''}
-
-  // Subtotals
-  const itemCount=cart.reduce((a,b)=>a+b.qty,0);
-  const subtotalsEl=document.getElementById('cart-subtotals');
-  if(cart.length>0){
-    subtotalsEl.innerHTML=`
-      <div class="subtotal-row"><span>Items (${itemCount})</span><span>${t.rupee}${total}</span></div>
-      <div class="subtotal-row"><span>Delivery</span><span style="color:#4ade80">FREE</span></div>`;
-  } else {subtotalsEl.innerHTML=''}
-
-  document.getElementById('total-price').textContent=t.rupee+total;
-  document.getElementById('fc-total').textContent=t.rupee+total;
-  document.getElementById('fc-count').textContent=count;
-
-  const badge=document.getElementById('cart-count');
-  if(count>0){
-    badge.textContent=count;badge.style.display='flex';
-    document.getElementById('cart-icon-btn').classList.add('active');
-    document.getElementById('floating-cart').classList.add('visible');
-  } else {
-    badge.style.display='none';
-    document.getElementById('cart-icon-btn').classList.remove('active');
-    document.getElementById('floating-cart').classList.remove('visible');
-  }
-}
-
-// ========= ORDER FORM =========
-function openOrderForm(){
-  if(cart.length===0){alert('Cart is empty!');return}
-  document.getElementById('order-modal').classList.add('active');
-  document.getElementById('payment-area').classList.remove('active');
-  getLiveLocation();
-}
-function closeModal(){document.getElementById('order-modal').classList.remove('active')}
-function getLiveLocation(){
-  if(navigator.geolocation){
-    navigator.geolocation.getCurrentPosition(
-      pos=>{
-        liveLocationUrl=`https://maps.google.com/?q=${pos.coords.latitude},${pos.coords.longitude}`;
-        document.getElementById('loc-status').classList.add('active');
-        document.getElementById('loc-icon').textContent='✅';
-        document.getElementById('loc-text').textContent='Location captured!';
-      },
-      ()=>{
-        document.getElementById('loc-icon').textContent='⚠️';
-        document.getElementById('loc-text').textContent='Permission denied';
-        liveLocationUrl='N/A';
-      }
-    );
-  }
-}
-
-// ========= PAYMENT =========
-function showPaymentOptions(){
-  const amt=document.getElementById('total-price').textContent.replace('₹','');
-  if(!amt||amt==='0'){alert('Cart is empty!');return}
-  document.getElementById('pay-amt-display').textContent='₹'+amt;
-  // Generate QR
-  const upiData=`upi://pay?pa=${UPI_ID}&pn=${encodeURIComponent(MERCHANT_NAME)}&am=${amt}&cu=INR`;
-  const qrUrl=`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(upiData)}&bgcolor=ffffff&color=3E2723&margin=8`;
-  document.getElementById('qr-code-img').src=qrUrl;
-  document.getElementById('payment-area').classList.add('active');
-}
-
-function openApp(appType){
-  const amt=document.getElementById('total-price').textContent.replace('₹','');
-  const pa=UPI_ID;const pn=encodeURIComponent(MERCHANT_NAME);
-  let url='';
-  
-  // Using standard UPI intent links for auto-open
-  if(appType==='gpay') url=`gpay://upi/pay?pa=${pa}&pn=${pn}&am=${amt}&cu=INR`;
-  else if(appType==='phonepe') url=`phonepe://pay?pa=${pa}&pn=${pn}&am=${amt}&cu=INR`;
-  else if(appType==='paytm') url=`paytmmp://pay?pa=${pa}&pn=${pn}&am=${amt}&cu=INR`;
-  
-  // Fallback to default UPI for other cases
-  else url=`upi://pay?pa=${pa}&pn=${pn}&am=${amt}&cu=INR`;
-  
-  window.location.href=url;
-}
-
-// ========= SUBMIT ORDER =========
-async function submitOrder(method){
-  const name=document.getElementById('c-name').value.trim();
-  const phone=document.getElementById('c-phone').value.trim();
-  const addr=document.getElementById('c-addr').value.trim();
-  if(!name||!phone||!addr){alert('Please fill all details!');return}
-  const t=translations[currentLang];
-  const totalPrice=document.getElementById('total-price').textContent;
-  const orderItems=cart.map(i=>`• ${i.name} x${i.qty} = ${t.rupee}${i.price*i.qty}`).join('\n');
-  const now=new Date();
-  const dateStr=now.toLocaleString('en-IN');
-  const msg=`🍳 *EGG MASTER — THE ROYAL TASTE*
-━━━━━━━━━━━━━━━━━
-👤 *Customer:* ${name}
-📱 *Phone:* ${phone}
-📍 *Address:* ${addr}
-🗺 *Location:* ${liveLocationUrl}
-🕐 *Time:* ${dateStr}
-━━━━━━━━━━━━━━━━━
-📋 *ORDER ITEMS:*
- ${orderItems}
-━━━━━━━━━━━━━━━━━
-💰 *Total:* ${totalPrice}
-💳 *Payment:* ${method}
-━━━━━━━━━━━━━━━━━
-_Thank you for choosing Egg Master! 🙏_
-_Gujarat's Finest Egg Cuisine_`;
-
-  // Prepare bill
-  document.getElementById('bill-date').textContent=`📅 Date: ${dateStr}  |  🧾 Order #${Math.floor(Math.random()*9000)+1000}`;
-  document.getElementById('bill-items-list').innerHTML=
-    cart.map(i=>`<div class="bill-item-row"><span>${i.name} x${i.qty}</span><span>${t.rupee}${i.price*i.qty}</span></div>`).join('');
-  document.getElementById('bill-grand-total').innerHTML=`<span>TOTAL</span><span>${totalPrice}</span>`;
-
-  // Open WhatsApp
-  window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`,'_blank');
-
-  // Generate & download bill image
-  const billArea=document.getElementById('bill-area');
-  billArea.style.cssText='position:fixed;left:0;top:0;z-index:999999;background:white';
-  try{
-    const canvas=await html2canvas(billArea,{scale:2.5,useCORS:true,backgroundColor:'#fff'});
-    const link=document.createElement('a');
-    link.download=`EggMaster_Bill_${Date.now()}.jpg`;
-    link.href=canvas.toDataURL('image/jpeg',0.95);
-    link.click();
-  }catch(e){console.warn('Bill gen error:',e)}
-  billArea.style.cssText='position:fixed;left:-9999px;z-index:-1;background:white';
-
-  cart=[];updateUI();closeModal();toggleCart(false);
-  showSuccessToast();
-}
-
-function showSuccessToast(){
-  const t=document.createElement('div');
-  t.style.cssText=`
-    position:fixed;top:20px;left:50%;transform:translateX(-50%);
-    background:linear-gradient(135deg,#8B6914,#C9A227,#E8D48B);
-    color:#000;padding:14px 30px;border-radius:40px;
-    font-family:'Rajdhani',sans-serif;font-weight:700;font-size:0.9rem;
-    letter-spacing:0.1em;z-index:999999;
-    box-shadow:0 10px 40px rgba(201,162,39,0.5);
-    animation:toastAnim 0.5s ease;
-  `;
-  t.textContent='🎉 Order Sent Successfully!';
-  const style=document.createElement('style');
-  style.textContent='@keyframes toastAnim{from{opacity:0;transform:translateX(-50%) translateY(-20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}';
-  document.head.appendChild(style);
-  document.body.appendChild(t);
-  setTimeout(()=>t.remove(),3500);
-}
-
-// ========= INIT =========
-renderMenu();
-updateUI();
 </script>
 </body>
 </html>
